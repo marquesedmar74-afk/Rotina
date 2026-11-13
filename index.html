@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rotina">
+<title>Rotina</title>
+<style>
+*{box-sizing:border-box;font-family:-apple-system,Helvetica,sans-serif}
+body{margin:0;background:#f2f4f8;color:#222;padding-bottom:70px}
+header{background:#3b6fd4;color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:20px;margin:0}
+.coins{background:#ffd54a;color:#5a4300;border-radius:20px;padding:6px 12px;font-weight:700}
+main{padding:14px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px #0001}
+.task{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+.task:last-child{border-bottom:0}
+.task .info{flex:1}
+.task small{color:#777}
+.done .name{text-decoration:line-through;color:#999}
+button{background:#3b6fd4;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:15px}
+button.red{background:#d43b3b}
+button.verde{background:#3bb273}
+input,select{width:100%;padding:10px;margin:4px 0 10px;border:1px solid #ccd;border-radius:8px;font-size:16px}
+.task input[type=checkbox]{width:28px;height:28px;margin:0}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #ddd;overflow-x:auto}
+nav button{flex:1 0 auto;background:none;color:#3b6fd4;border-radius:0;padding:16px 10px;white-space:nowrap}
+nav button.active{font-weight:700;background:#e8efff}
+.bar{height:14px;background:#e3e7ee;border-radius:8px;overflow:hidden;margin-top:6px}
+.bar div{height:100%;background:#3bb273}
+.late{color:#d43b3b;font-weight:700}
+label{display:block;font-size:13px;color:#555;margin-top:6px}
+body.kid{background:linear-gradient(180deg,#7ec8ff 0%,#c9e9ff 45%,#fff3c4 100%);min-height:100vh}
+body.kid header{background:linear-gradient(90deg,#ff7a59,#ffb347);border-radius:0 0 24px 24px;box-shadow:0 4px 10px #0002}
+body.kid .card{border-radius:22px;box-shadow:0 4px 12px #0002;border:3px solid #fff}
+body.kid nav{border-radius:22px 22px 0 0;box-shadow:0 -3px 10px #0002}
+body.kid nav button{font-size:13px;padding:14px 8px}
+body.kid .task{border-bottom:2px dashed #e7e7e7}
+body.kid .task input[type=checkbox]{width:34px;height:34px;accent-color:#3bb273}
+.ico{font-size:34px;width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.saud{text-align:center;padding:6px 0 14px}
+.saud .bicho{font-size:64px;display:inline-block;animation:pula 2s ease-in-out infinite}
+.saud h2{margin:4px 0;font-size:24px;color:#14507a}
+.saud p{margin:0;color:#14507a;font-weight:700}
+.frase{margin:8px 6px 10px;padding:10px 14px;background:#ffffffd9;border-radius:16px;color:#14507a;font-weight:700;font-size:15px;line-height:1.35}
+@keyframes pula{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.conf{position:fixed;top:-20px;font-size:24px;z-index:99;pointer-events:none;animation:cai 2.2s linear forwards}
+@keyframes cai{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+.humor{display:flex;justify-content:space-between;gap:6px;margin:10px 4px 0}
+.humor button{flex:1;background:#ffffffcc;border:3px solid transparent;border-radius:18px;padding:6px 0;font-size:34px;line-height:1.1;box-shadow:0 2px 6px #0002}
+.humor button.sel{border-color:#14507a;background:#fff;transform:scale(1.12);box-shadow:0 4px 10px #0003}
+.humor-t{margin:12px 4px 0;font-weight:700;color:#14507a;font-size:15px;text-align:left}
+.moeda-pula{animation:moeda .6s ease}
+@keyframes moeda{0%{transform:scale(1)}40%{transform:scale(1.5) rotate(-8deg)}100%{transform:scale(1)}}
+.cor{position:fixed;bottom:-40px;font-size:26px;z-index:99;pointer-events:none;animation:sobe 3s ease-out forwards}
+@keyframes sobe{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(-110vh) scale(1.3) rotate(15deg);opacity:0}}
+.brilho{position:fixed;top:0;left:0;right:0;bottom:0;z-index:98;pointer-events:none;background:radial-gradient(circle at 50% 60%,#fff6b8cc 0%,#ffd54a55 40%,transparent 70%);animation:brilha 2.4s ease-out forwards}
+@keyframes brilha{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+.msgbem{position:fixed;left:10%;right:10%;top:38%;z-index:100;text-align:center;font-size:26px;font-weight:800;color:#b8325a;background:#fff;border-radius:24px;padding:18px;box-shadow:0 8px 30px #0004;pointer-events:none;animation:pop 2.4s ease forwards}
+@keyframes pop{0%{transform:scale(.3);opacity:0}20%{transform:scale(1.08);opacity:1}30%{transform:scale(1)}85%{opacity:1}100%{transform:scale(1);opacity:0}}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.seg button{background:#e8efff;color:#3b6fd4;padding:8px 12px;font-size:14px}
+.seg button.on{background:#3b6fd4;color:#fff}
+.kpis{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.kpi{flex:1 1 90px;background:#f2f4f8;border-radius:12px;padding:10px;text-align:center}
+.kpi b{display:block;font-size:20px}
+.kpi small{color:#666}
+.hb{margin-top:10px;font-size:13px}
+.hb .t{display:flex;justify-content:space-between;gap:8px}
+.hb .b{height:12px;background:#e3e7ee;border-radius:6px;overflow:hidden;margin-top:3px}
+.hb .b div{height:100%;border-radius:6px}
+.lg{font-size:13px;padding:8px 0;border-bottom:1px solid #eee}
+.lg small{color:#777}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#eef;color:#336;margin-left:4px}
+.ins{font-size:14px;margin:6px 0;line-height:1.35}
+.album{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.slot{aspect-ratio:3/4;border-radius:12px;border:3px dashed #b9c4d6;background:#ffffff80;display:flex;align-items:center;justify-content:center;color:#9aa8bd;font-weight:800;font-size:22px}
+.fig{aspect-ratio:3/4;border-radius:12px;border:5px solid #fff;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:linear-gradient(135deg,#fffbe6,#ffe9a8 50%,#fffbe6);padding:2px}
+.fig::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(115deg,transparent 38%,#ffffffb0 50%,transparent 62%);pointer-events:none}
+.fig .num{position:absolute;top:3px;left:6px;font-size:10px;font-weight:800;color:#8a6d00}
+.fig .em{font-size:44px;line-height:1.1}
+.fig .nv{font-size:12px;font-weight:800}
+.fig small{font-size:10px;color:#7a6a3a;line-height:1.2}
+.fig.nova{animation:pop2 .8s ease}
+@keyframes pop2{0%{transform:scale(.2) rotate(-30deg);opacity:0}60%{transform:scale(1.15)}100%{opacity:1}}
+.premio{display:flex;align-items:center;gap:10px;margin-top:12px}
+.premio .info{flex:1;min-width:0}
+.premio button{flex:none;width:98px;font-size:13px;padding:8px 6px;line-height:1.15}
+.duo{display:flex;gap:10px}
+.duo>div{flex:1;min-width:0}
+.fig.esp{border:5px solid transparent;background:linear-gradient(#fffbe6,#fff0b8) padding-box,linear-gradient(120deg,#ff4d6d,#ffb703,#06d6a0,#3a86ff,#8338ec,#ff4d6d) border-box;background-size:100% 100%,300% 300%;animation:arco 4s linear infinite;box-shadow:0 3px 10px #0004}
+@keyframes arco{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
+.esp .heroi{font-size:42px;line-height:1.1;animation:pula 1.6s ease-in-out infinite;position:relative;z-index:1}
+.esp .tt{font-size:11px;font-weight:900;color:#b8325a;line-height:1.1;position:relative;z-index:1;margin-top:2px}
+.esp small{position:relative;z-index:1}
+.esp .fa{position:absolute;font-size:13px;animation:brilhinho 1.8s ease-in-out infinite;z-index:1}
+@keyframes brilhinho{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+.acoes-i{display:flex;flex-direction:row;gap:6px}
+.ib{padding:0;width:40px;height:40px;font-size:18px;line-height:1;background:#e8efff;border-radius:10px}
+.ib.red{background:#ffe3e3}
+.mini-ico{font-size:24px;width:38px;height:38px;border-radius:12px;background:#fff0c2;display:flex;align-items:center;justify-content:center;flex:none}
+.rotulo-msg{margin:6px 6px 0;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#14507a;opacity:.75}
+.rotulo-msg+.frase{margin-top:2px}
+.palco{position:relative;height:290px;display:flex;align-items:flex-end;justify-content:center;background:#d9f0ff;border-radius:16px;overflow:hidden;margin:10px 0 6px}
+.cena{position:absolute;inset:0;z-index:0;pointer-events:none}
+.cena svg{width:100%;height:100%;display:block}
+.esc{position:relative;z-index:1;transform-origin:bottom center;transition:transform .5s;padding-bottom:102px}
+.bicho-w{position:relative;width:110px;height:110px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.b-corpo{font-size:88px;line-height:110px;text-align:center}
+.b-corpo.arco{animation:arco2 4s linear infinite}
+@keyframes arco2{from{filter:hue-rotate(0deg) saturate(1.6);-webkit-filter:hue-rotate(0deg) saturate(1.6)}to{filter:hue-rotate(360deg) saturate(1.6);-webkit-filter:hue-rotate(360deg) saturate(1.6)}}
+.bicho-w>div{position:absolute;left:0;right:0;text-align:center;line-height:1;pointer-events:none}
+.bicho-w>.b-corpo{position:static}
+.b-cab{top:-26px;font-size:48px}
+.b-rosto{top:34px;font-size:42px}
+.b-pescoco{bottom:-20px;font-size:32px}
+.b-roupa{bottom:-44px;font-size:48px}
+.b-pernas{bottom:-74px;font-size:38px}
+.b-pes{bottom:-100px;font-size:30px}
+.b-mao{position:absolute;z-index:2;right:8%;bottom:22px;font-size:46px;animation:bal 2s ease-in-out infinite;pointer-events:none}
+@keyframes bal{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes rir{0%,100%{transform:rotate(0)}15%{transform:rotate(-8deg) translateY(-6px)}30%{transform:rotate(8deg)}45%{transform:rotate(-8deg) translateY(-6px)}60%{transform:rotate(8deg)}75%{transform:rotate(-4deg) translateY(-4px)}}
+.r-riso{animation:rir .9s ease-in-out 1}
+@keyframes dancar{0%{transform:none}12%{transform:translateX(-22px) rotate(-12deg)}25%{transform:translateX(22px) rotate(12deg) translateY(-16px)}37%{transform:translateX(-22px) rotate(-12deg)}50%{transform:scaleX(-1) translateY(-22px)}62%{transform:scaleX(1)}75%{transform:translateY(-18px) rotate(10deg)}100%{transform:none}}
+.r-danca{animation:dancar 1.5s ease-in-out 1}
+@keyframes joia{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(-6deg)}60%{transform:scale(1.1) rotate(4deg)}100%{transform:scale(1)}}
+.r-joia{animation:joia .9s ease-out 1}
+.r-pula{animation:pula .6s ease 2}
+.flut{position:absolute;z-index:3;bottom:110px;font-size:30px;pointer-events:none;animation:sobe2 2s ease-out forwards}
+@keyframes sobe2{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(-170px) scale(1.4);opacity:0}}
+.mini-cena{width:100%;height:50px;border-radius:10px;overflow:hidden;margin-bottom:2px}
+.mini-cena svg{width:100%;height:100%;display:block}
+.fala{background:#fff;border:2px solid #cfe3ff;border-radius:14px;padding:8px 12px;font-size:14px;font-weight:700;color:#14507a;text-align:center;margin-top:8px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:8px 0}
+.tile{background:#f2f4f8;color:#333;border:2px solid transparent;border-radius:14px;padding:8px 4px;font-size:34px;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}
+.tile small{font-size:12px;color:#555;text-align:center}
+.tile b{font-size:13px;color:#8a6500}
+.tile.on{border-color:#3b6fd4;background:#e8efff}
+.tile.ok{border-color:#3bb273}
+.tile.sem{opacity:.55}
+.cuidar{display:flex;gap:8px;margin-top:10px}
+.cuidar button{flex:1;line-height:1.25}
+.cuidar button small{display:block;font-weight:400;opacity:.95;color:#fff}
+.cuidar button.cinza{background:#9aa4b5}
+</style>
+</head>
+<body>
+<header><h1 id="title">Rotina</h1><div class="coins" id="coins"></div></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,onSnapshot,increment,arrayUnion,arrayRemove,deleteField,runTransaction,collection,getDocs} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyAY5Qd6odxo-SUmFDRiwoYNqFdGUZLF250",
+  authDomain:"rotina-joao.firebaseapp.com",
+  projectId:"rotina-joao",
+  storageBucket:"rotina-joao.firebasestorage.app",
+  messagingSenderId:"604511598547",
+  appId:"1:604511598547:web:bb1d637e1159eb02822126"
+});
+const auth=getAuth(app), db=getFirestore(app), ref=doc(db,'rotina','estado');
+
+const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const hoje=()=>fmt(new Date());
+const padrao={
+  modo:'tarde', moedas:0,
+  premios:[{nome:'Sorvete',custo:30},{nome:'1h de videogame',custo:50}],
+  tarefas:[
+    {id:1,nome:'Acordar',tipo:'alarme',hora:'12:00',modo:'tarde',meta:5,moedas:2,grupo:'manha'},
+    {id:2,nome:'Arrumar a cama',tipo:'checklist',modo:'todos',meta:5,moedas:1,grupo:'manha'},
+    {id:3,nome:'Preparar o cafe',tipo:'checklist',modo:'todos',meta:4,moedas:2,grupo:'manha'},
+    {id:4,nome:'Remedio da manha',tipo:'checklist',modo:'todos',meta:7,moedas:3,grupo:'manha'},
+    {id:5,nome:'Fazer a licao',tipo:'checklist',modo:'todos',meta:5,moedas:3,grupo:'noite'},
+    {id:6,nome:'Remedio da noite',tipo:'checklist',modo:'todos',meta:7,moedas:3,grupo:'noite'},
+    {id:7,nome:'Dormir',tipo:'alarme',hora:'21:30',modo:'todos',meta:6,moedas:2,grupo:'noite'}
+  ],
+  historico:{}
+};
+
+let S=null, user=null, aba='hoje', erro='', antes=null, antesP=null, antesB=null, antesE=0, parar=null;
+let editando=null, carrinho=[], logDados=null, logFiltro='todos', logCarregando=false, logouAcesso=false;
+let ui={per:'semana',ref:new Date()};
+const NOMES={'KJtN8ctEsRhVvMpVUH6kxrtf0eL2':'Edmar','WFFbp5sGscUvE0nLgIRbNufl48j2':'Patricia'};
+const admin=()=>!!(user&&NOMES[user.uid]);
+const quem=()=>admin()?NOMES[user.uid]:'João';
+const dia=d=>(S.historico[d]=S.historico[d]||{});
+const periodo=t=>{const h=parseInt((t.hora||'08:00').split(':')[0],10);return h<12?'manha':h<18?'tarde':'noite'};
+const NOMEP={manha:'Manhã',tarde:'Tarde',noite:'Noite'};
+const HORAPADRAO={2:'07:00',3:'07:30',4:'08:00',5:'19:00',6:'20:30'};
+const porHora=(a,b)=>(a.hora||'').localeCompare(b.hora||'');
+const NOMEDIA=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+const diasDe=t=>(t.dias&&t.dias.length)?t.dias:[0,1,2,3,4,5,6];
+const folgaDe=ds=>((S&&S.folgas)||{})[ds]||null;
+const valeNoDia=(t,d)=>diasDe(t).includes(d.getDay())&&!folgaDe(fmt(d));
+const valeHoje=t=>valeNoDia(t,new Date());
+const doModo=()=>S.tarefas.filter(t=>t.modo==='todos'||t.modo===S.modo);
+const ativas=()=>doModo().filter(valeHoje);
+const metaSemana=t=>{const sg=segundaDaSemana();let n=0;for(let i=0;i<7;i++){if(valeNoDia(t,addDias(sg,i)))n++}return n};
+const limpar=(s,n)=>String(s==null?'':s).replace(/[\u0000-\u001f\u007f\u202a-\u202e]/g,'').trim().slice(0,n);
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const numOk=(v,min,max)=>{const n=Math.round(+v);return isFinite(n)&&n>=min&&n<=max?n:null};
+const horaOk=h=>/^([01]\d|2[0-3]):[0-5]\d$/.test(h||'');
+const hora=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const exigeAprov=()=>S.exigirAprovacao!==false;
+const HUMOR_KEY='_humor';
+const mesDe=d=>fmt(d).slice(0,7);
+
+const IMPS=[{k:'i1',n:'Importante',d:3},{k:'i2',n:'Bem importante',d:5},{k:'i3',n:'Muito importante',d:8},{k:'i4',n:'Importantíssimo',d:12}];
+const cfgImp=()=>{const o={};IMPS.forEach(x=>{o[x.k]=x.d});return Object.assign(o,(S&&S.cfgImp)||{})};
+const nomeImp=k=>{const x=IMPS.find(i=>i.k===k);return x?x.n:''};
+const moedasDe=t=>(t&&t.imp&&cfgImp()[t.imp]!=null)?(+cfgImp()[t.imp]||0):(+(t&&t.moedas)||0);
+
+async function salvar(...campos){
+  const d={};campos.forEach(c=>{d[c]=S[c]});
+  try{await updateDoc(ref,d)}catch(e){alert('Nao consegui salvar: '+e.message)}
+}
+async function gravar(d){
+  try{await updateDoc(ref,d)}catch(e){alert('Nao consegui salvar: '+e.message)}
+}
+async function transacao(fn){
+  try{
+    return await runTransaction(db,async tx=>{
+      const sn=await tx.get(ref);const d=sn.data()||{};
+      const r=fn(d);if(!r)return false;
+      tx.update(ref,r);return true;
+    });
+  }catch(e){alert('Nao consegui salvar: '+e.message);return false}
+}
+function logar(k,x){
+  try{
+    setDoc(doc(db,'log',mesDe(new Date())),{itens:arrayUnion({t:Date.now(),q:quem(),k:k,x:limpar(x,200)})},{merge:true}).catch(e=>console.log('log',e.message));
+  }catch(e){console.log('log',e.message)}
+}
+
+function aviso(msg){
+  let e=document.getElementById('toast');
+  if(!e){e=document.createElement('div');e.id='toast';
+    e.style.cssText='position:fixed;top:12px;left:12px;right:12px;background:#3bb273;color:#fff;padding:14px;border-radius:12px;z-index:200;font-weight:700;display:none';
+    document.body.appendChild(e)}
+  e.textContent=msg;e.style.display='block';setTimeout(()=>{e.style.display='none'},5000);
+}
+function checarAvisos(novo){
+  const h=(novo.historico||{})[hoje()]||{};
+  const snap={};Object.keys(h).forEach(k=>{if(k!==HUMOR_KEY)snap[k]=estado(h[k])});
+  const np=Object.keys(novo.pedidos||{}).length;
+  const nb=Object.values(novo.bemReg||{}).filter(b=>b.s==='pendente').length;
+  const ne=Object.keys(h).filter(k=>k!==HUMOR_KEY&&h[k]&&typeof h[k]==='object'&&h[k].e).length+Object.values(novo.bemReg||{}).filter(b=>b.e).length;
+  if(antes===null){antes=snap;antesP=np;antesB=nb;antesE=ne;return}
+  if(!admin()&&ne>antesE)aviso('💬 Seus pais mandaram um elogio!');
+  if(admin()){
+    Object.keys(snap).filter(id=>!antes[id]).forEach(id=>{
+      const t=(novo.tarefas||[]).find(x=>String(x.id)===id);
+      if(t)aviso((snap[id]==='pendente'?'Aguardando aprovacao: ':'Concluiu: ')+t.nome);
+    });
+    if(np>antesP)aviso('O João enviou um pedido de prêmios');
+    if(nb>antesB)aviso('Atitude do bem aguardando aprovação');
+  }
+  antes=snap;antesP=np;antesB=nb;antesE=ne;
+}
+
+const FRASES_T=[
+["Dizer obrigado é um jeito simples de fazer alguém sorrir.","Quem agradece percebe quantas coisas boas já tem.","Hoje, agradeça por uma coisa que você costuma achar normal.","A gratidão deixa o coração leve.","Um obrigado sincero vale mais que muitos presentes.","Cada dia é uma chance nova, e isso já é motivo para agradecer.","Agradecer ao fim do dia ajuda a dormir com o coração tranquilo.","Lembre de quem te ajudou esta semana e diga obrigado.","Quem é grato enxerga o bem até nos dias difíceis.","Ser grato não custa nada e muda o seu dia inteiro.","Obrigado é uma palavra pequena com um poder gigante.","Antes de pedir mais, olhe para tudo o que você já recebeu."],
+["Depois da noite mais escura, o sol sempre volta.","Acreditar que amanhã pode ser melhor já faz o hoje melhorar.","Cada pequeno passo te leva mais perto do seu sonho.","A esperança é uma semente: plante hoje e cuide todo dia.","Nenhuma dificuldade dura para sempre.","Sonhar grande começa com um passo pequeno hoje.","Quem espera com fé trabalha com alegria.","O melhor ainda está por vir, e você ajuda a construí-lo.","Se hoje foi difícil, amanhã você recomeça com mais força.","Mantenha acesa a luz da esperança: ela ilumina o caminho.","Sempre existe uma saída, às vezes ela só precisa de paciência.","Acredite em você: as grandes histórias começam assim."],
+["Dizer a verdade é difícil às vezes, mas deixa a consciência leve.","Honestidade é fazer o certo mesmo quando ninguém está olhando.","Uma palavra honesta constrói confiança, e confiança vale ouro.","Errou? Assumir o erro mostra coragem.","Quem fala a verdade não precisa lembrar de mentiras.","Ser honesto também é cumprir o que prometeu.","A verdade dita com carinho ajuda e não machuca.","Pessoas honestas são aquelas em quem todo mundo confia.","Devolver o que não é seu é sinal de bom caráter.","Seja o mesmo em casa, na escola e em qualquer lugar.","A coragem de dizer a verdade abre portas que a mentira fecha.","Fazer o seu melhor com honestidade é ganhar de verdade."],
+["Cair faz parte, o que conta é levantar.","Cada tropeço ensina algo para a próxima tentativa.","Quem não desiste de tentar aprende a vencer.","Fortes não são os que nunca caem, e sim os que se levantam.","Um dia difícil não é um dia perdido, é um dia de treino.","Insistir com paciência quebra até a pedra mais dura.","Se o caminho ficou difícil, respire e continue: devagar também se chega.","Errar é aprender de coração aberto.","Às vezes a coragem é só tentar mais uma vez.","Todo campeão já perdeu antes de ganhar.","Você é mais forte do que imagina.","O esforço de hoje constrói a vitória de amanhã."],
+["Um bom amigo é um presente que a vida dá.","Para ter bons amigos, seja um bom amigo.","Amigo de verdade escuta, ajuda e fica nas horas difíceis.","Dividir um sorriso com um amigo multiplica a alegria.","Convide para brincar quem está sozinho: pode nascer uma grande amizade.","A amizade cresce com respeito, atenção e boas conversas.","Um amigo que diz a verdade com carinho vale muito.","Perdoar um amigo é cuidar da amizade.","Amigos de verdade comemoram as suas vitórias como se fossem deles.","Mande um abraço hoje para alguém importante para você.","A melhor aventura é a que se vive com bons amigos.","Cuide dos seus amigos como quem cuida de um jardim."],
+["Uma pequena gentileza pode mudar o dia de alguém.","Ser bondoso não custa nada e enche o coração.","Hoje, faça um bem sem esperar nada em troca.","Palavras gentis são sementes que florescem.","Quem ajuda os outros ajuda a si mesmo a ser feliz.","Um sorriso é a menor bondade e uma das mais bonitas.","Seja gentil com todos: cada pessoa carrega uma batalha que você não vê.","Ajudar sem precisar pedir é bondade de verdade.","Compartilhar é multiplicar a felicidade.","Trate cada pessoa com o carinho que você gostaria de receber.","O mundo fica melhor a cada gesto de bondade, inclusive os seus.","Seja luz na vida de alguém hoje."],
+["Somos todos uma grande família, cuidar uns dos outros é a nossa força.","Juntos chegamos mais longe do que sozinhos.","Quem ajuda um irmão ajuda a si mesmo.","A união da família é o maior tesouro.","Respeitar as diferenças nos deixa mais fortes.","Em equipe, o peso fica leve e a vitória fica doce.","Toda pessoa merece respeito, carinho e uma chance.","Dividir as tarefas com a família deixa a casa mais feliz.","Fraternidade é tratar o outro como parte da nossa família.","Quando um ajuda o outro, todos crescem.","A paz começa nas pequenas atitudes entre as pessoas.","Um abraço diz o que as palavras às vezes não alcançam."],
+["Os mais velhos guardam histórias e sabedoria: vale a pena ouvir.","Ajudar os avós é devolver todo o carinho que recebemos.","Alguns minutos de atenção deixam uma pessoa idosa muito feliz.","Quem respeita os mais velhos aprende com a experiência deles.","Peça para um avô ou uma avó contar uma história da juventude.","Cuidar de quem já cuidou de nós é um ato de amor.","Segurar a porta, oferecer o lugar, ajudar com a sacola: gestos pequenos, gratidão enorme.","Os cabelos brancos merecem respeito e carinho.","Ligar para os avós alegra o dia deles e o seu.","A paciência com os mais velhos mostra a grandeza do seu coração.","Quem escuta os mais velhos aprende lições que nenhum livro ensina.","Cada ruga conta uma história: escute com atenção."],
+["Honrar pai e mãe é reconhecer todo o amor que eles dão a você.","Dizer obrigado, mãe, e obrigado, pai, faz o dia deles melhor.","Obedecer com respeito é um jeito de dizer: eu confio em você.","Seus pais torcem por você a cada passo, mostre que você também torce por eles.","Ajudar em casa é uma forma bonita de honrar sua família.","Um abraço apertado nos seus pais vale mais que mil palavras.","Ouça seus pais com atenção: eles querem o melhor para você.","Seus pais trabalham por você, agradeça com carinho e respeito.","Respeitar pai e mãe é plantar uma vida cheia de bênçãos.","Fale com gentileza com seus pais, mesmo quando estiver cansado.","Dizer eu te amo para os seus pais nunca é demais.","Aprender com seus pais é um presente que dura a vida toda."]
+];
+const FRASES=[];for(let i=0;i<12;i++){FRASES_T.forEach(t=>FRASES.push(t[i]))}
+function fraseDoDia(){
+  const d=new Date();
+  const n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,0,1))/86400000);
+  return FRASES[((n%FRASES.length)+FRASES.length)%FRASES.length];
+}
+const HUMORES=[{e:'😄',n:'Muito feliz'},{e:'🙂',n:'Bem'},{e:'😐',n:'Mais ou menos'},{e:'😠',n:'Chateado'},{e:'🤬',n:'Com muita raiva'}];
+function estado(v){return v===undefined||v===null||typeof v==='number'?'':(typeof v==='string'?'feita':v.s)}
+function humorDe(data){const h=S.historico[data]||{};const v=h[HUMOR_KEY];return typeof v==='number'?v:null}
+function escolherHumor(i){
+  if(admin())return;
+  const h=dia(hoje());
+  h[HUMOR_KEY]=i;
+  gravar({['historico.'+hoje()+'.'+HUMOR_KEY]:i});
+  logar('humor','João escolheu o humor: '+HUMORES[i].n);
+  desenhar();
+}
+function blocoHumor(){
+  const at=humorDe(hoje());
+  return '<div class="humor-t">Como você está hoje?</div><div class="humor">'+HUMORES.map((x,i)=>'<button class="'+(at===i?'sel':'')+'" onclick="escolherHumor('+i+')" aria-label="'+x.n+'">'+x.e+'</button>').join('')+'</div>'+(at!==null?'<div style="text-align:center;margin-top:6px;font-size:13px;color:#14507a">Hoje: '+HUMORES[at].n+'</div>':'');
+}
+function cartaoHumor(){
+  let linhas='';
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=fmt(d),hm=humorDe(ds);
+    linhas+='<div style="flex:1;text-align:center;font-size:12px"><div style="font-size:26px;min-height:34px">'+(hm===null?'<span style="color:#bbb">-</span>':HUMORES[hm].e)+'</div>'+NOMEDIA[d.getDay()]+'</div>';
+  }
+  const hj=humorDe(hoje());
+  return '<div class="card"><b>Como o João está se sentindo</b><div style="margin-top:6px;font-size:14px">Hoje: '+(hj===null?'ainda não respondeu':HUMORES[hj].e+' '+HUMORES[hj].n)+'</div><div style="display:flex;margin-top:10px">'+linhas+'</div><small style="color:#777">Últimos 7 dias, a última coluna é hoje.</small></div>';
+}
+
+/* ---------- som e efeitos ---------- */
+let ac=null;
+function audio(){
+  try{
+    if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ac=new C()}
+    if(ac.state==='suspended')ac.resume();
+    return ac;
+  }catch(e){return null}
+}
+function nota(f,t0,dur,vol,tipo){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=tipo;o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(vol,t0+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+dur+0.05);
+}
+function tocar(tipo){
+  if(!S||S.som===false)return;
+  const c=audio();if(!c)return;
+  try{
+    const t=c.currentTime;
+    if(tipo==='bem')[659.25,783.99,987.77,1318.51,1567.98].forEach((f,i)=>nota(f,t+i*0.11,0.8,0.12,'sine'));
+    else if(tipo==='riso')[880,988,880,988,1047,988].forEach((f,i)=>nota(f,t+i*0.07,0.12,0.09,'square'));
+    else if(tipo==='danca')[523.25,659.25,523.25,783.99,659.25,783.99,1046.5].forEach((f,i)=>nota(f,t+i*0.1,0.18,0.12,'triangle'));
+    else if(tipo==='joia')[783.99,1046.5].forEach((f,i)=>nota(f,t+i*0.12,0.3,0.14,'sine'));
+    else if(tipo==='comer')[440,587.33,740].forEach((f,i)=>nota(f,t+i*0.07,0.12,0.12,'sine'));
+    else [523.25,659.25,783.99].forEach((f,i)=>nota(f,t+i*0.09,0.4,0.16,'triangle'));
+  }catch(e){}
+}
+let confeteAte=0;
+function confete(){
+  const em=['🎉','⭐','🪙','✨','🎈','🎊'];
+  if(Date.now()<confeteAte)return;
+  confeteAte=Date.now()+2500;
+  for(let i=0;i<24;i++){
+    const e=document.createElement('div');e.className='conf';
+    e.textContent=em[i%em.length];
+    e.style.left=Math.random()*95+'vw';
+    e.style.animationDelay=Math.random()*0.5+'s';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),3200);
+  }
+  const c=document.getElementById('coins');
+  if(c){c.classList.remove('moeda-pula');void c.offsetWidth;c.classList.add('moeda-pula')}
+}
+let bemAte=0;
+function efeitoBem(){
+  if(Date.now()<bemAte)return;
+  bemAte=Date.now()+3000;
+  const em=['❤️','💖','💛','✨','🌟','💗'];
+  const b=document.createElement('div');b.className='brilho';document.body.appendChild(b);setTimeout(()=>b.remove(),2600);
+  const m=document.createElement('div');m.className='msgbem';m.textContent='Que atitude linda! 💛';document.body.appendChild(m);setTimeout(()=>m.remove(),2600);
+  for(let i=0;i<20;i++){
+    const e=document.createElement('div');e.className='cor';
+    e.textContent=em[i%em.length];
+    e.style.left=(Math.random()*90+2)+'vw';
+    e.style.animationDelay=(Math.random()*0.8)+'s';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),4000);
+  }
+}
+
+/* ---------- semanas, troféus ---------- */
+const FIGS=['🚀','🐉','🦈','⚡','🪐','🏎️','🦖','🏀','⚽','🦅','🦁','🐺','🌋','🏔️','🥇','🛡️','⚔️','🏹','🧙','🤖','👾','🎮','🚁','✈️','🛸','🌌','☄️','🔭','🦊','🐯','🦍','🐙','🦎','🐊','🦂','🦇','🏄','⛷️','🧗','🎯','🏏','🏓','🥊','🎸','🧨','💎','🧭','🏴‍☠️','🥝','🌪️'];
+const NIVEIS={bronze:{nome:'Bronze',cor:'#cd7f32'},prata:{nome:'Prata',cor:'#9aa5b1'},ouro:{nome:'Ouro',cor:'#e6b800'}};
+const cfgSemana=()=>Object.assign({bronze:90,prata:95,ouro:100,bBronze:5,bPrata:8,bOuro:12},S.cfgSemana||{});
+function segundaDaSemana(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
+function percentualSemana(seg){
+  let esp=0,feito=0;
+  for(let i=0;i<7;i++){
+    const d=new Date(seg);d.setDate(seg.getDate()+i);
+    const h=S.historico[fmt(d)]||{};
+    doModo().filter(t=>valeNoDia(t,d)).forEach(t=>{
+      esp++;
+      const e=estado(h[t.id]);
+      if(e==='feita'||e==='aprovada')feito++;
+    });
+  }
+  return esp?Math.round(feito/esp*100):null;
+}
+function nivelDe(p){
+  const c=cfgSemana();
+  if(p>=c.ouro)return 'ouro';
+  if(p>=c.prata)return 'prata';
+  if(p>=c.bronze)return 'bronze';
+  return null;
+}
+async function fecharSemanas(){
+  if(!admin()||!S)return;
+  S.conquistas=S.conquistas||[];
+  S.semanasFechadas=S.semanasFechadas||[];
+  const atual=segundaDaSemana();
+  let mudou=false;const novas=[],fechadas=[];
+  for(let k=1;k<=8;k++){
+    const seg=new Date(atual);seg.setDate(atual.getDate()-7*k);
+    const chave=fmt(seg);
+    if(S.semanasFechadas.includes(chave))continue;
+    const p=percentualSemana(seg);
+    S.semanasFechadas.push(chave);fechadas.push(chave);mudou=true;
+    if(p===null)continue;
+    const n=nivelDe(p);
+    if(!n)continue;
+    const c=cfgSemana();
+    const bonus={bronze:c.bBronze,prata:c.bPrata,ouro:c.bOuro}[n];
+    const usadas=S.conquistas.map(x=>x.fig);
+    let livres=FIGS.filter(f=>!usadas.includes(f));
+    if(!livres.length)livres=FIGS.slice();
+    const fig=livres[Math.floor(Math.random()*livres.length)];
+    const conq={semana:chave,pct:p,nivel:n,bonus:bonus,fig:fig};
+    S.conquistas.push(conq);
+    novas.push(conq);
+  }
+  if(mudou){
+    try{
+      const ok=await runTransaction(db,async tx=>{
+        const sn=await tx.get(ref);
+        const d=sn.data()||{};
+        const jaFechadas=d.semanasFechadas||[];
+        const fechar=fechadas.filter(x=>!jaFechadas.includes(x));
+        if(!fechar.length)return false;
+        const conqNovas=novas.filter(x=>fechar.includes(x.semana));
+        const bonusReal=conqNovas.reduce((a,x)=>a+x.bonus,0);
+        const upd={semanasFechadas:jaFechadas.concat(fechar)};
+        if(conqNovas.length)upd.conquistas=(d.conquistas||[]).concat(conqNovas);
+        if(bonusReal)upd.moedas=(d.moedas||0)+bonusReal;
+        tx.update(ref,upd);
+        return conqNovas.length?conqNovas:true;
+      });
+      if(Array.isArray(ok))logar('semana','Semana fechada: '+ok.map(c=>c.semana+' '+c.nivel+' (+'+c.bonus+')').join(', '));
+    }catch(e){alert('Nao consegui fechar a semana: '+e.message)}
+  }
+}
+const temEspecial=id=>((S&&S.especiais)||[]).some(e=>e.id===id);
+function jaEngajou(d){
+  return Object.keys(d.historico||{}).some(ds=>Object.keys(d.historico[ds]||{}).some(id=>id!==HUMOR_KEY&&['feita','aprovada','pendente','rejeitada'].includes(estado(d.historico[ds][id]))));
+}
+async function concederEspeciais(){
+  if(!admin()||!S||temEspecial('iniciante')||!jaEngajou(S))return;
+  const ok=await transacao(d=>{
+    if(((d.especiais)||[]).some(e=>e.id==='iniciante')||!jaEngajou(d))return null;
+    return {especiais:(d.especiais||[]).concat([{id:'iniciante',data:hoje()}])};
+  });
+  if(ok)logar('troféu','Troféu Iniciante Empolgado concedido ao João');
+}
+function vistoEsp(){try{return localStorage.getItem('vistoIniciante')==='1'}catch(e){return false}}
+function marcarVistoEsp(){try{localStorage.setItem('vistoIniciante','1')}catch(e){}}
+function figEspecial(){
+  return '<div class="fig esp" style="transform:rotate(-2deg)"><span class="num">nº 1</span><span class="fa" style="top:4px;right:6px">✨</span><span class="fa" style="bottom:4px;left:6px;animation-delay:.7s">⭐</span><span class="fa" style="top:40px;left:4px;animation-delay:1.2s">✨</span><div class="heroi">🦸</div><div class="tt">🏅 INICIANTE EMPOLGADO</div><small>Você começou com tudo!</small></div>';
+}
+function telaTrofeus(){
+  const l=(S.conquistas||[]).slice();
+  const cs=cfgSemana();
+  const n=l.length;
+  const esp=temEspecial('iniciante');
+  const off=esp?1:0;
+  const total=Math.max(12,Math.ceil((n+off+2)/3)*3);
+  let html='<div class="card"><b>📖 Meu álbum de troféus ('+(n+(esp?1:0))+')</b><div class="album">';
+  for(let i=0;i<total;i++){
+    const x=(esp&&i===0)?null:l[i-off];
+    if(esp&&i===0)html+=figEspecial();
+    else if(x){
+      const nv=NIVEIS[x.nivel]||NIVEIS.bronze;
+      const rot=((i*37)%7)-3;
+      html+='<div class="fig" style="transform:rotate('+rot+'deg);box-shadow:0 3px 8px #0004,0 0 0 3px '+nv.cor+'"><span class="num">nº '+(i+1)+'</span><div class="em">'+x.fig+'</div><div class="nv" style="color:'+nv.cor+'">'+nv.nome+' '+(+x.pct||0)+'%</div><small>Semana de '+esc(String(x.semana).slice(8))+'/'+esc(String(x.semana).slice(5,7))+'</small><small style="color:#b8860b;font-weight:700">+'+(+x.bonus||0)+' moedas</small></div>';
+    }else html+='<div class="slot">'+(i+1)+'</div>';
+  }
+  html+='</div>';
+  if(esp)html+='<div style="margin-top:12px;padding:10px;border-radius:12px;background:#fff6d6;color:#5a4300;font-weight:700;font-size:14px;line-height:1.35">🏅 Iniciante Empolgado: você começou com tudo! O primeiro passo já foi dado, e quem começa assim chega longe. Eu acredito em você! 💪</div>';
+  if(!n)html+='<div style="color:#777;margin-top:10px">'+(esp?'Agora vem as figurinhas da semana: cumpra ':'Cumpra ')+cs.bronze+'% ou mais das metas em uma semana para colar sua primeira figurinha!</div>';
+  html+='</div>';
+  html+='<div class="card"><b>Como ganhar</b><div style="margin-top:8px">Bronze: '+cs.bronze+'% ou mais (+'+cs.bBronze+' moedas)<br>Prata: '+cs.prata+'% ou mais (+'+cs.bPrata+' moedas)<br>Ouro: '+cs.ouro+'% (+'+cs.bOuro+' moedas)</div><small style="color:#777">Figurinhas diferentes na coleção: '+new Set(l.map(x=>x.fig)).size+' de '+FIGS.length+'</small></div>';
+  return html;
+}
+function mudarCfg(campo,v){
+  const n=Math.max(0,Math.min(1000,Math.round(+v||0)));
+  S.cfgSemana=Object.assign({},S.cfgSemana||{});
+  S.cfgSemana[campo]=n;
+  gravar({['cfgSemana.'+campo]:n});
+  logar('config','Troféus: '+campo+' = '+n);
+  desenhar();
+}
+function mudarImpCfg(k,v){
+  const n=numOk(v,1,1000);
+  if(n===null){alert('Use um número de 1 a 1000');desenhar();return}
+  S.cfgImp=Object.assign({},S.cfgImp||{});S.cfgImp[k]=n;
+  gravar({['cfgImp.'+k]:n});
+  logar('config','Valor de "'+nomeImp(k)+'" = '+n+' moedas');
+  desenhar();
+}
+function mudarSom(v){S.som=v;gravar({som:v});logar('config','Som '+(v?'ligado':'desligado'));desenhar()}
+
+/* ---------- ícones, saudação ---------- */
+const ICONES=[[/\b(mochila|material escolar|caderno|estojo)/,'🎒'],[/\b(remedio|medicamento|vitamina|pilula|comprimido|gotas)/,'💊'],[/\b(escov|dente|dentes|fio dental)/,'🪥'],[/\b(banho|chuveiro)/,'🚿'],[/\b(banheiro|privada|vaso)/,'🚽'],[/\b(cabelo|pentear|pente)\b/,'💇'],[/\b(lavar a mao|lavar as maos|maos)\b/,'🧼'],[/\b(cama|lencol|edredom|travesseiro)/,'🛏️'],[/\b(roupa|roupas|uniforme|camisa|meia|meias|vestir|cesto)/,'👕'],[/\b(brinquedo|brinquedos|lego)/,'🧸'],[/\b(cafe|desjejum|leite|cereal|pao)\b/,'🥞'],[/\b(lanche|merenda)/,'🥪'],[/\b(almoco|jantar|refeicao|comer)/,'🍽️'],[/\b(fruta|frutas|salada|verdura|legume)/,'🥗'],[/\b(agua|beber)\b/,'💧'],[/\b(licao|dever|deveres|tarefa de casa|estudar|estudo|prova)/,'📝'],[/\b(leitura|livro|livros)|\bler\b/,'📚'],[/\b(escola|aula|colegio)/,'🏫'],[/\b(acordar|despertar|despertador|levantar)/,'⏰'],[/\b(dormir|sono|deitar)/,'😴'],[/\b(lixo|reciclagem|reciclavel)/,'🗑️'],[/\b(louca|loucas|prato|pratos|talher|talheres|mesa)\b/,'🍽️'],[/\b(planta|plantas|regar|jardim)/,'🪴'],[/\b(cachorro|cao|gato|pets?|animal|racao|passear)\b/,'🐶'],[/\b(quarto|arrumar|organizar|guardar|limpar|limpeza|varrer|aspirar|bagunca)/,'🧹'],[/\b(exercicio|exercicios|esporte|treino|treinar|futebol|bola|corrida|correr|natacao|bicicleta)/,'⚽'],[/\b(violao|musica|piano|guitarra|flauta|instrumento)/,'🎸'],[/\b(tela|telas|celular|tablet|videogame|jogo|jogos|tv|televisao)\b/,'🎮'],[/\b(oracao|orar|rezar|agradecer)/,'🙏'],[/\b(avisar|ligar|telefonar)/,'📞'],[/\b(ajudar|ajuda)\b/,'🤝'],[/\b(carregar|carregador|bateria)/,'🔌']];
+const ICONES_TAREFA=[['🛏️','Cama'],['🥞','Café da manhã'],['🥪','Lanche'],['🍽️','Refeição / louça'],['🥗','Fruta / salada'],['💧','Água'],['💊','Remédio'],['🪥','Escovar os dentes'],['🚿','Banho'],['🚽','Banheiro'],['💇','Cabelo'],['🧼','Lavar as mãos'],['👕','Roupa'],['🎒','Mochila'],['📝','Lição de casa'],['📚','Leitura'],['🏫','Escola'],['⏰','Acordar'],['😴','Dormir'],['🗑️','Lixo'],['🧹','Arrumar / limpar'],['🧸','Brinquedos'],['🐶','Animal de estimação'],['🪴','Plantas'],['⚽','Esporte / exercício'],['🎸','Música'],['🎮','Tela / jogo'],['🙏','Oração'],['📞','Ligar / avisar'],['🤝','Ajudar'],['🔌','Carregar aparelho'],['⭐','Estrela'],['❤️','Coração'],['🌟','Brilho']];
+const semAcento=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function iconeDe(nome){const n=semAcento(nome||'');for(const [re,ic] of ICONES){if(re.test(n))return ic}return '⭐'}
+const iconeTarefa=t=>(t&&t.ic)||iconeDe(t&&t.nome);
+const ICONES_P=[[/\b(doacao)/,'💝'],[/\b(sorvete|picole|gelado|acai)/,'🍦'],[/\b(pizza)/,'🍕'],[/\b(hamburg|lanche|fast|batata)/,'🍔'],[/\b(doce|chocolate|bala|guloseima|bombom|bolo)/,'🍫'],[/\b(video|game|jogo|console|play|xbox|nintendo|minecraft|roblox)/,'🎮'],[/\b(tela|celular|tablet|tv|televisao|desenho)\b/,'📱'],[/\b(cinema|filme|serie|netflix)/,'🎬'],[/\b(passeio|parque|viagem|praia|piscina|sitio)/,'🏞️'],[/\b(brinquedo|lego|boneco|carrinho|figurinha)/,'🧸'],[/\b(bola|futebol|esporte|bicicleta|bike|skate)/,'⚽'],[/\b(dinheiro|mesada|reais|real|moeda)\b/,'💵'],[/\b(amigo|amigos|festa|aniversario|pernoite)/,'🎉'],[/\b(livro|gibi|quadrinho|hq)/,'📚'],[/\b(roupa|tenis|camisa|chuteira)/,'👟'],[/\b(refrigerante|suco|milk|bebida)/,'🥤'],[/\b(restaurante|jantar|almoco)/,'🍽️'],[/\b(dormir|soneca)/,'😴']];
+const ICONES_PREMIO=[['🍦','Sorvete'],['🍕','Pizza'],['🍔','Lanche'],['🍫','Doce'],['🎮','Videogame'],['📱','Celular / tela'],['🎬','Cinema / filme'],['🏞️','Passeio'],['🧸','Brinquedo'],['⚽','Esporte'],['💵','Dinheiro'],['🎉','Festa / amigos'],['📚','Livro'],['👟','Roupa / tênis'],['🥤','Bebida'],['🍽️','Restaurante'],['😴','Dormir mais'],['🎁','Presente'],['⭐','Estrela']];
+function iconePremio(nome){const pe=(S&&S.premios||[]).find(p=>p.nome===nome&&p.ic);if(pe)return pe.ic;const n=semAcento(nome||'');for(const [re,ic] of ICONES_P){if(re.test(n))return ic}return '🎁'}
+const COR_PER={manha:'#ffe28a',tarde:'#ffc58a',noite:'#b9c4ff'};
+const BICHOS=['🦁','🐯','🦊','🐼','🐨','🦄','🐲','🦅'];
+function saudacao(){
+  const h=new Date().getHours();
+  const bicho=BICHOS[new Date().getDay()%BICHOS.length];
+  const s=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const at=ativas();
+  const est=t=>estado(dia(hoje())[t.id]);
+  const feitas=at.filter(t=>['feita','aprovada'].includes(est(t))).length;
+  const aguard=at.filter(t=>est(t)==='pendente').length;
+  const tot=at.length;
+  const pct=tot?Math.round(feitas/tot*100):0;
+  const msg=folgaDe(hoje())?'Hoje é dia de folga. Descanse e aproveite!':tot===0?'Hoje não tem tarefas. Aproveite!':(feitas+aguard)===0?'Vamos começar? Você consegue!':feitas===tot?'Missão cumprida! Você é demais!':(feitas+aguard)===tot?'Tudo enviado! Agora é só esperar os pais aprovarem.':'Muito bem! Falta pouco!';
+  return '<div class="saud"><div class="bicho">'+bicho+'</div><h2>'+s+', João!</h2><div class="rotulo-msg">Mensagem do Dia</div><div class="frase">'+esc(fraseDoDia())+'</div><div style="margin:10px 12px 0;text-align:left;font-size:13px;color:#14507a;font-weight:700">'+feitas+' de '+tot+' tarefas aprovadas'+(aguard?' · '+aguard+' aguardando aprovação':'')+'</div><div class="bar" style="margin:4px 12px 0;height:20px;background:#ffffffaa"><div style="width:'+pct+'%;background:linear-gradient(90deg,#3bb273,#9be15d);height:100%"></div></div><p style="margin-top:10px">'+msg+'</p>'+blocoHumor()+'</div>';
+}
+
+/* ---------- tarefas: marcar, aprovar, rejeitar ---------- */
+function marcar(id){
+  if(admin())return;
+  const h=dia(hoje()), t=S.tarefas.find(x=>x.id===id);
+  if(!t)return;
+  audio();
+  const e=estado(h[id]);
+  if(e==='rejeitada'||e==='aprovada')return;
+  const cam='historico.'+hoje()+'.'+id;
+  if(e==='pendente'){delete h[id];gravar({[cam]:deleteField()});logar('tarefa','João desmarcou: '+t.nome);desenhar();return}
+  if(e==='feita'){
+    const v=(h[id]&&typeof h[id]==='object'&&h[id].v!=null)?h[id].v:moedasDe(t);
+    delete h[id];S.moedas-=v;
+    gravar({[cam]:deleteField(),moedas:increment(-v)});
+    logar('tarefa','João desmarcou: '+t.nome+' (-'+v+' moedas)');
+    desenhar();return;
+  }
+  const v=moedasDe(t);
+  if(exigeAprov()){
+    h[id]={s:'pendente',h:hora()};gravar({[cam]:h[id]});
+    logar('tarefa','João marcou (aguarda aprovação): '+t.nome);
+  }else{
+    h[id]={s:'feita',h:hora(),v:v};S.moedas+=v;
+    gravar({[cam]:h[id],moedas:increment(v)});
+    logar('tarefa','João concluiu: '+t.nome+' (+'+v+' moedas)');
+  }
+  desenhar();confete();tocar('tarefa');
+}
+async function aprovar(data,id,comElogio){
+  const t=S.tarefas.find(x=>x.id===id);if(!t)return;
+  const v=moedasDe(t);
+  let e='';
+  if(comElogio){const raw=prompt('Escreva um elogio para o João (opcional). Ele vai ler.');if(raw===null)return;e=limpar(raw,140)}
+  const ok=await transacao(d=>{
+    const r=((d.historico||{})[data]||{})[id];
+    if(!r||estado(r)!=='pendente')return null;
+    const rec={s:'aprovada',h:r.h||'',v:v,p:quem()};if(e)rec.e=e;
+    return {['historico.'+data+'.'+id]:rec,moedas:(d.moedas||0)+v};
+  });
+  if(ok)logar('aprovação',quem()+' aprovou: '+t.nome+' ('+br(data)+', +'+v+' moedas)'+(e?' — elogio: '+e:''));
+  else aviso('Esta tarefa já foi tratada.');
+}
+async function rejeitar(data,id){
+  const r0=((S.historico||{})[data]||{})[id];
+  if(estado(r0)!=='pendente')return;
+  const t=S.tarefas.find(x=>x.id===id);
+  const raw=prompt('Por que está rejeitando? O João vai ler este motivo.');
+  if(raw===null)return;
+  const m=limpar(raw,140);
+  if(m.length<2){alert('Escreva o motivo da rejeição.');return}
+  const ok=await transacao(d=>{
+    const r=((d.historico||{})[data]||{})[id];
+    if(!r||estado(r)!=='pendente')return null;
+    return {['historico.'+data+'.'+id]:{s:'rejeitada',h:r.h||'',m:m,p:quem()}};
+  });
+  if(ok)logar('rejeição',quem()+' rejeitou: '+(t?t.nome:id)+' ('+br(data)+') — '+m);
+  else aviso('Esta tarefa já foi tratada.');
+}
+function mudarAprovacao(v){
+  S.exigirAprovacao=v;
+  const upd={exigirAprovacao:v};
+  if(!v){
+    let soma=0;
+    Object.keys(S.historico).forEach(data=>{
+      const h=S.historico[data];
+      Object.keys(h).forEach(id=>{
+        if(id!==HUMOR_KEY&&estado(h[id])==='pendente'){
+          const t=S.tarefas.find(x=>String(x.id)===id);
+          const vv=t?moedasDe(t):0;
+          h[id]={s:'aprovada',h:h[id].h||'',v:vv,p:quem()};
+          upd['historico.'+data+'.'+id]=h[id];
+          soma+=vv;
+        }
+      });
+    });
+    Object.keys(S.bemReg||{}).forEach(id=>{
+      const b=S.bemReg[id];
+      if(b.s==='pendente'&&!b.livre){b.s='aprovada';b.p=quem();upd['bemReg.'+id+'.s']='aprovada';upd['bemReg.'+id+'.p']=quem();soma+=(+b.moedas||0)}
+    });
+    if(soma){upd.moedas=increment(soma);S.moedas+=soma}
+  }
+  gravar(upd);
+  logar('config','Aprovação de tarefas '+(v?'ligada':'desligada'));
+  desenhar();
+}
+function pendentesAprov(){
+  const l=[];
+  Object.keys(S.historico).sort().forEach(data=>{
+    const h=S.historico[data];
+    Object.keys(h).forEach(id=>{
+      if(id!==HUMOR_KEY&&estado(h[id])==='pendente'){
+        const t=S.tarefas.find(x=>String(x.id)===id);
+        if(t)l.push({data:data,t:t,h:h[id].h});
+      }
+    });
+  });
+  return l;
+}
+function semanaFeita(id){
+  let n=0;const s=segundaDaSemana();
+  for(let i=0;i<7;i++){const d=new Date(s);d.setDate(s.getDate()+i);
+    const e=estado((S.historico[fmt(d)]||{})[id]);if(e==='feita'||e==='aprovada')n++}
+  return n;
+}
+function atrasada(t){
+  if(t.tipo!=='alarme'||dia(hoje())[t.id]||!horaOk(t.hora))return false;
+  const a=new Date(),p=t.hora.split(':');
+  return a.getHours()*60+a.getMinutes()>(+p[0])*60+(+p[1])+15;
+}
+
+/* ---------- atitudes do bem ---------- */
+function pendentesBem(){return Object.values(S.bemReg||{}).filter(b=>b.s==='pendente').sort((a,b)=>String(a.id).localeCompare(String(b.id)))}
+function marcarBem(aid){
+  if(admin())return;
+  const a=(S.atitudes||[]).find(x=>x.id===aid);if(!a)return;
+  if(!confirm('Você fez isto mesmo: '+a.nome+'?'))return;
+  audio();
+  const id='b'+Date.now();
+  const v=+a.moedas||0;
+  const aprov=!exigeAprov();
+  const reg={id:id,aid:aid,nome:a.nome,moedas:v,data:hoje(),hora:hora(),s:aprov?'aprovada':'pendente'};
+  S.bemReg=S.bemReg||{};S.bemReg[id]=reg;
+  const upd={['bemReg.'+id]:reg};
+  if(aprov){S.moedas+=v;upd.moedas=increment(v)}
+  gravar(upd);
+  logar('bem','João registrou atitude do bem: '+a.nome+(aprov?' (+'+v+' moedas)':' (aguarda aprovação)'));
+  desenhar();efeitoBem();tocar('bem');
+}
+function registrarBem(aid){
+  if(!admin())return;
+  const a=(S.atitudes||[]).find(x=>x.id===aid);if(!a)return;
+  if(!confirm('Registrar "'+a.nome+'" para o João? Ele ganha '+(+a.moedas||0)+' moedas agora.'))return;
+  const id='b'+Date.now();const v=+a.moedas||0;
+  const reg={id:id,aid:aid,nome:a.nome,moedas:v,data:hoje(),hora:hora(),s:'aprovada',p:quem()};
+  S.bemReg=S.bemReg||{};S.bemReg[id]=reg;S.moedas+=v;
+  gravar({['bemReg.'+id]:reg,moedas:increment(v)});
+  logar('bem',quem()+' registrou atitude do bem: '+a.nome+' (+'+v+' moedas)');
+  desenhar();
+}
+function enviarBemLivre(){
+  if(admin())return;
+  const el=document.getElementById('bem_txt');
+  const tx=limpar(el?el.value:'',140);
+  if(tx.length<3){alert('Escreva o que você fez de bom hoje.');return}
+  audio();
+  const id='b'+Date.now();
+  const reg={id:id,aid:0,nome:tx,moedas:0,livre:true,data:hoje(),hora:hora(),s:'pendente'};
+  S.bemReg=S.bemReg||{};S.bemReg[id]=reg;
+  gravar({['bemReg.'+id]:reg});
+  if(el)el.value='';
+  logar('bem','João contou uma atitude do bem: '+tx+' (aguarda os pais)');
+  desenhar();efeitoBem();tocar('bem');
+}
+async function aprovarBem(id,comElogio){
+  const b=(S.bemReg||{})[id];if(!b)return;
+  let v=+b.moedas||0;
+  if(b.livre){
+    const raw=prompt('Quantas moedas o João ganha por: "'+b.nome+'"? (1 a 100)');
+    if(raw===null)return;
+    v=numOk(raw,1,100);
+    if(v===null){alert('Digite um número de 1 a 100.');return}
+  }
+  let e='';
+  if(comElogio){const raw=prompt('Escreva um elogio para o João (opcional). Ele vai ler.');if(raw===null)return;e=limpar(raw,140)}
+  const ok=await transacao(d=>{
+    const r=(d.bemReg||{})[id];
+    if(!r||r.s!=='pendente')return null;
+    const u={['bemReg.'+id+'.s']:'aprovada',['bemReg.'+id+'.p']:quem(),moedas:(d.moedas||0)+v};
+    if(r.livre)u['bemReg.'+id+'.moedas']=v;
+    if(e)u['bemReg.'+id+'.e']=e;
+    return u;
+  });
+  if(ok)logar('aprovação',quem()+' aprovou atitude do bem: '+b.nome+' (+'+v+' moedas)');
+  else aviso('Esta atitude já foi tratada.');
+}
+async function rejeitarBem(id){
+  const b=(S.bemReg||{})[id];if(!b||b.s!=='pendente')return;
+  const raw=prompt('Por que está rejeitando? O João vai ler este motivo.');
+  if(raw===null)return;
+  const m=limpar(raw,140);
+  if(m.length<2){alert('Escreva o motivo da rejeição.');return}
+  const ok=await transacao(d=>{
+    const r=(d.bemReg||{})[id];
+    if(!r||r.s!=='pendente')return null;
+    return {['bemReg.'+id+'.s']:'rejeitada',['bemReg.'+id+'.m']:m,['bemReg.'+id+'.p']:quem()};
+  });
+  if(ok)logar('rejeição',quem()+' rejeitou atitude do bem: '+b.nome+' — '+m);
+  else aviso('Esta atitude já foi tratada.');
+}
+function telaBem(){
+  const at=S.atitudes||[];
+  let html='<div class="card"><b>Conte uma coisa boa que você fez 💛</b><div style="font-size:13px;color:#555;margin-top:4px">Escreva com suas palavras. Os pais leem e escolhem quantas moedas você ganha.</div><input id="bem_txt" maxlength="140" placeholder="Ex: ajudei a vovó com as compras"><button class="verde" onclick="enviarBemLivre()">Enviar aos pais</button></div>';
+  html+='<div class="card"><b>Atitudes do bem 💛</b><div style="font-size:13px;color:#555;margin-top:4px">Fez algo bom hoje? Marque aqui. As moedas chegam quando os pais confirmarem.</div>';
+  html+=at.length?at.map(a=>'<div class="task"><div class="ico" style="background:#ffd6e0">💛</div><div class="info"><div class="name">'+esc(a.nome)+'</div><small>vale '+(+a.moedas||0)+' moedas</small></div><button class="verde" onclick="marcarBem('+a.id+')">Eu fiz!</button></div>').join(''):'<div class="task">Os pais ainda não cadastraram atitudes do bem.</div>';
+  html+='</div>';
+  const reg=Object.values(S.bemReg||{}).sort((a,b)=>String(b.id).localeCompare(String(a.id))).slice(0,15);
+  html+='<div class="card"><b>Minhas atitudes recentes</b>'+(reg.length?reg.map(b=>'<div class="task"><div class="info"><div class="name">'+esc(b.nome)+'</div><small>'+esc(br(b.data))+' · '+(b.livre&&b.s==='pendente'?'os pais vão decidir as moedas':(+b.moedas||0)+' moedas')+'</small>'+(b.s==='rejeitada'&&b.m?'<div class="late" style="font-size:13px">Motivo: '+esc(b.m)+'</div>':'')+(b.e?'<div style="color:#1f8a55;font-size:13px;font-weight:700">💬 '+esc(b.p||'Seus pais')+': “'+esc(b.e)+'”</div>':'')+'</div><span>'+(b.s==='aprovada'?'✅ Aprovada':b.s==='rejeitada'?'❌ Rejeitada':'⏳ Aguardando')+'</span></div>').join(''):'<div class="task">Nada ainda. Que tal uma boa ação hoje?</div>')+'</div>';
+  return html;
+}
+
+/* ---------- telas do dia ---------- */
+function grafico7(){
+  let cols='';
+  const s=segundaDaSemana(),hojeStr=hoje(),nomes=['Seg','Ter','Qua','Qui','Sex','Sab','Dom'];
+  for(let i=0;i<7;i++){
+    const d=new Date(s);d.setDate(s.getDate()+i);
+    const ds=fmt(d),futuro=ds>hojeStr,ehHoje=ds===hojeStr;
+    const hh=S.historico[ds]||{};
+    const atd=doModo().filter(t=>valeNoDia(t,d));
+    const n=atd.filter(t=>['feita','aprovada'].includes(estado(hh[t.id]))).length;
+    const p=atd.length?Math.round(n/atd.length*100):0;
+    cols+='<div style="flex:1;text-align:center;font-size:12px;'+(ehHoje?'font-weight:700;background:#e8efff;border-radius:8px;':'')+'"><div style="height:100px;display:flex;align-items:flex-end"><div style="width:70%;margin:0 auto;background:#3bb273;height:'+(futuro?0:p)+'%"></div></div>'+nomes[i]+'<br>'+(futuro?'-':(folgaDe(ds)?'🏖️':p+'%'))+'</div>';
+  }
+  return '<div class="card"><b>Esta semana (segunda a domingo)</b><div style="display:flex;margin-top:10px">'+cols+'</div></div>';
+}
+function telaLogin(){
+  return '<div class="card"><b>Entrar</b><input id="l_email" type="email" placeholder="E-mail"><input id="l_senha" type="password" placeholder="Senha"><button onclick="entrar()">Entrar</button><p class="late">'+esc(erro)+'</p></div>';
+}
+async function entrar(){
+  erro='';
+  try{await signInWithEmailAndPassword(auth,document.getElementById('l_email').value.trim(),document.getElementById('l_senha').value)}
+  catch(e){erro='E-mail ou senha incorretos';desenhar()}
+}
+function sair(){aba='hoje';signOut(auth)}
+function telaHoje(){
+  let html=(admin()?'':saudacao()+cartaoSonho())+cartaoFolga();
+  ['manha','tarde','noite'].forEach(g=>{
+    const lt=ativas().filter(t=>periodo(t)===g).sort(porHora);
+    if(!lt.length)return;
+    html+='<div class="card"><b style="font-size:18px">'+(g==='manha'?'🌅 ':g==='tarde'?'☀️ ':'🌙 ')+NOMEP[g]+'</b>';
+    lt.forEach(t=>{
+      const reg=dia(hoje())[t.id];
+      const est=estado(reg);
+      const ok=est==='feita'||est==='aprovada'||est==='pendente';
+      const travado=admin()||est==='rejeitada'||est==='aprovada';
+      const selo=est==='pendente'?' <span style="color:#b8860b;font-weight:700">Aguardando aprovação</span>':est==='rejeitada'?' <span class="late">Rejeitada</span>':est==='aprovada'?' <span style="color:#3bb273;font-weight:700">Aprovada</span>':'';
+      const elog=(est==='aprovada'&&reg&&reg.e)?'<div style="color:#1f8a55;font-size:13px;margin-top:2px;font-weight:700">💬 '+esc(reg.p||'Seus pais')+': “'+esc(reg.e)+'”</div>':'';
+      const motivo=(est==='rejeitada'&&reg&&reg.m)?'<div class="late" style="font-size:13px;margin-top:2px">Motivo: '+esc(reg.m)+'</div>':'';
+      html+='<div class="task '+(ok?'done':'')+'"><div class="ico" style="background:'+COR_PER[g]+'">'+iconeTarefa(t)+'</div><input type="checkbox" '+(ok?'checked ':'')+(travado?'disabled ':'')+'onchange="marcar('+t.id+')"><div class="info"><div class="name">'+esc(t.nome)+'</div><small>'+esc(t.hora)+' · '+(t.tipo==='alarme'?'Alarme':'Lembrete')+' · vale '+moedasDe(t)+' moedas</small>'+selo+(atrasada(t)?' <span class="late">Atrasada!</span>':'')+motivo+elog+'</div></div>';
+    });
+    html+='</div>';
+  });
+  return html;
+}
+function telaProgresso(){
+  let html=(admin()?'':grafico7());
+  html+='<div class="card"><b>Atingimento de Metas desta semana</b>';
+  doModo().forEach(t=>{
+    const f=semanaFeita(t.id),m=metaSemana(t);
+    if(!m){html+='<div style="margin-top:12px;color:#777">'+esc(t.nome)+' — sem dias de meta esta semana (folga)</div>';return}
+    const p=Math.min(100,Math.round(f/m*100));
+    html+='<div style="margin-top:12px">'+esc(t.nome)+' — '+f+' de '+m+' ('+p+'%)<div class="bar"><div style="width:'+p+'%"></div></div></div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+/* ---------- prêmios: simulação, pedido, assumir ---------- */
+function reservado(){
+  let n=0;
+  Object.values(S.pedidos||{}).forEach(p=>Object.values(p.itens||{}).forEach(it=>{if(it.s==='pedido')n+=+it.custo||0}));
+  return n;
+}
+const disponivel=()=>S.moedas-reservado();
+const STPED_DOA={pedido:'⏳ Aguardando os pais',assumido:'💝 Os pais vão fazer a doação',entregue:'✅ Doação feita',recusado:'🚫 Não foi dessa vez'};
+const stDe=it=>(it.doa?STPED_DOA:STPED)[it.s]||'';
+const CAUSAS_PADRAO=['Ajudar quem precisa','Cuidar de animais','Presente para alguém querido'];
+const causas=()=>(S&&Array.isArray(S.causas)&&S.causas.length)?S.causas:CAUSAS_PADRAO.map(n=>({nome:n}));
+function cartaoDoar(){
+  const cs=causas();let tot=0;
+  Object.values(S.pedidos||{}).forEach(p=>Object.values(p.itens||{}).forEach(it=>{if(it.doa&&(it.s==='assumido'||it.s==='entregue'))tot+=+it.custo||0}));
+  return '<div class="card"><b>💝 Doar moedas</b><div style="font-size:13px;color:#555;margin-top:4px">Quer ajudar alguém? Escolha uma causa e quantas moedas quer doar. Os pais combinam como fazer a doação.</div><label>Causa</label><select id="doa_causa">'+cs.map((c,i)=>'<option value="'+i+'">'+esc(c.nome)+'</option>').join('')+'</select><label>Quantas moedas?</label><input id="doa_qtd" type="number" min="1" placeholder="Ex: 5"><button class="verde" onclick="enviarDoacao()">Enviar doação</button>'+(tot?'<div style="margin-top:10px;font-weight:700;color:#e91e63">💝 Você já doou '+tot+' moedas. Que coração generoso!</div>':'')+'</div>';
+}
+function enviarDoacao(){
+  if(admin())return;
+  const c=causas()[+valEd('doa_causa')];
+  if(!c)return alert('Escolha uma causa.');
+  const q=numOk(valEd('doa_qtd'),1,100000);
+  if(q===null)return alert('Escreva quantas moedas quer doar.');
+  if(q>disponivel())return alert('Você só tem '+Math.max(0,disponivel())+' moedas disponíveis.');
+  if(!confirm('Doar '+q+' moedas para "'+c.nome+'"? Os pais vão combinar como fazer a doação.'))return;
+  const pid='p'+Date.now();
+  const ped={id:pid,data:hoje(),hora:hora(),itens:{i0:{nome:'Doação: '+c.nome,custo:q,s:'pedido',doa:1}}};
+  S.pedidos=S.pedidos||{};S.pedidos[pid]=ped;
+  gravar({['pedidos.'+pid]:ped});
+  const el=document.getElementById('doa_qtd');if(el)el.value='';
+  logar('doação','João quer doar '+q+' moedas: '+c.nome+' (aguarda os pais)');
+  desenhar();aviso('💝 Doação enviada aos pais!');efeitoBem();tocar('bem');
+}
+function novaCausa(){
+  const n=limpar(valEd('cau_nome'),50);if(!n)return alert('Digite o nome da causa');
+  const l=causas().map(c=>({nome:c.nome}));l.push({nome:n});S.causas=l;
+  salvar('causas');logar('config','Nova causa para doar: '+n);desenhar();
+}
+function tirarCausa(i){
+  const l=causas().map(c=>({nome:c.nome}));const c=l[i];
+  if(!c)return;
+  if(l.length<=1)return alert('Deixe pelo menos uma causa.');
+  if(!confirm('Excluir a causa "'+c.nome+'"? Isso não pode ser desfeito.'))return;
+  l.splice(i,1);S.causas=l;salvar('causas');logar('config','Causa excluída: '+c.nome);desenhar();
+}
+const STPED={pedido:'⏳ Aguardando os pais',assumido:'🎁 Vão te dar',entregue:'✅ Entregue',recusado:'🚫 Não foi dessa vez'};
+const idNum=id=>+String(id).slice(1)||0;
+function toggleSim(i){
+  const p=S.premios[i];if(!p||admin())return;
+  const k=carrinho.indexOf(p.nome);
+  if(k>=0)carrinho.splice(k,1);else carrinho.push(p.nome);
+  desenhar();
+}
+function limparSim(){carrinho=[];desenhar()}
+function enviarPedido(){
+  if(admin())return;
+  const its=S.premios.filter(p=>carrinho.includes(p.nome)&&p.custo>0);
+  if(!its.length)return;
+  const tot=its.reduce((a,p)=>a+p.custo,0);
+  if(tot>disponivel()){alert('Faltam moedas para este pedido.');return}
+  if(!confirm('Enviar o pedido ('+its.map(p=>p.nome).join(' + ')+') aos pais?'))return;
+  const pid='p'+Date.now(),itens={};
+  its.forEach((p,i)=>{itens['i'+i]={nome:p.nome,custo:p.custo,s:'pedido'}});
+  const ped={id:pid,data:hoje(),hora:hora(),itens:itens};
+  S.pedidos=S.pedidos||{};S.pedidos[pid]=ped;carrinho=[];
+  gravar({['pedidos.'+pid]:ped});
+  logar('prêmio','João enviou pedido: '+its.map(p=>p.nome).join(' + ')+' (total '+tot+' moedas)');
+  desenhar();confete();tocar('tarefa');
+}
+async function assumir(pid,ik){
+  const p=(S.pedidos||{})[pid];const it=p&&p.itens&&p.itens[ik];if(!it)return;
+  if(!confirm(it.doa?'Você vai fazer a doação "'+it.nome+'" em nome do João? As '+(+it.custo||0)+' moedas saem do saldo dele agora.':'Você vai dar "'+it.nome+'" ao João? As '+(+it.custo||0)+' moedas saem do saldo dele agora.'))return;
+  let motivo='';
+  const ok=await transacao(d=>{
+    const x=(((d.pedidos||{})[pid]||{}).itens||{})[ik];
+    if(!x||x.s!=='pedido'){motivo='ja';return null}
+    const c=+x.custo||0;
+    if((d.moedas||0)<c&&!d.saldoNegativo){motivo='saldo';return null}
+    const b='pedidos.'+pid+'.itens.'+ik;
+    return {[b+'.s']:'assumido',[b+'.por']:quem(),[b+'.dAss']:hoje(),moedas:(d.moedas||0)-c};
+  });
+  if(ok)logar('prêmio',quem()+' assumiu o prêmio: '+it.nome+' (-'+(+it.custo||0)+' moedas)');
+  else if(motivo==='saldo')alert('O João não tem moedas suficientes agora. Recuse o item ou espere.');
+  else if(motivo==='ja')aviso('Este prêmio já foi assumido por outro administrador.');
+}
+async function recusar(pid,ik){
+  const p=(S.pedidos||{})[pid];const it=p&&p.itens&&p.itens[ik];if(!it)return;
+  const raw=prompt('Por que não vai dar este prêmio agora? O João vai ler.');
+  if(raw===null)return;
+  const m=limpar(raw,140);
+  if(m.length<2){alert('Escreva o motivo.');return}
+  const ok=await transacao(d=>{
+    const x=(((d.pedidos||{})[pid]||{}).itens||{})[ik];
+    if(!x||x.s!=='pedido')return null;
+    const b='pedidos.'+pid+'.itens.'+ik;
+    return {[b+'.s']:'recusado',[b+'.m']:m,[b+'.por']:quem()};
+  });
+  if(ok)logar('prêmio',quem()+' recusou o prêmio: '+it.nome+' — '+m);
+  else aviso('Este prêmio já foi tratado.');
+}
+function entregarItem(pid,ik){
+  const p=(S.pedidos||{})[pid];const it=p&&p.itens&&p.itens[ik];
+  if(!it||it.s!=='assumido')return;
+  if(!confirm('Marcar "'+it.nome+'" como entregue?'))return;
+  const b='pedidos.'+pid+'.itens.'+ik;
+  gravar({[b+'.s']:'entregue',[b+'.dEnt']:hoje()});
+  logar('prêmio',quem()+' entregou: '+it.nome);
+}
+function pedidosOrdenados(){return Object.values(S.pedidos||{}).sort((a,b)=>idNum(b.id)-idNum(a.id))}
+function cartaoSimulacao(){
+  const its=S.premios.filter(p=>carrinho.includes(p.nome));
+  if(!its.length)return '<div class="card"><b>Simulação</b><div style="color:#777;margin-top:6px">Toque em Simular resgate nos prêmios acima para ver quanto sobra de moedas antes de pedir.</div></div>';
+  const tot=its.reduce((a,p)=>a+(+p.custo||0),0),disp=disponivel(),sobra=disp-tot;
+  return '<div class="card"><b>Simulação do pedido</b>'+its.map(p=>'<div class="task"><div class="mini-ico">'+iconePremio(p.nome)+'</div><div class="info">'+esc(p.nome)+'</div><b>'+(+p.custo||0)+'</b></div>').join('')+'<div style="margin-top:8px">Total: <b>'+tot+'</b> moedas<br>Você tem: <b>'+disp+'</b><br>'+(sobra>=0?'Sobram: <b style="color:#3bb273">'+sobra+'</b>':'Faltam: <b class="late">'+(-sobra)+'</b>')+'</div><div style="margin-top:10px;display:flex;gap:8px"><button '+(sobra>=0?'':'disabled style="opacity:.5" ')+'onclick="enviarPedido()">Enviar pedido aos pais</button><button class="red" onclick="limparSim()">Limpar</button></div><small style="color:#777">Ainda é só uma simulação: nada é pedido até você enviar.</small></div>';
+}
+function meusPedidos(){
+  const ps=pedidosOrdenados().slice(0,10);
+  return '<div class="card"><b>Meus pedidos</b>'+(ps.length?ps.map(p=>'<div style="margin-top:10px;font-size:13px;color:#777">Pedido de '+esc(br(p.data))+' '+esc(p.hora||'')+'</div>'+Object.keys(p.itens||{}).sort().map(k=>{const it=p.itens[k];return '<div class="task"><div class="mini-ico">'+iconePremio(it.nome)+'</div><div class="info"><div class="name">'+esc(it.nome)+'</div><small>'+(+it.custo||0)+' moedas'+(it.por&&it.s!=='pedido'?' · '+esc(it.por):'')+'</small>'+(it.s==='recusado'&&it.m?'<div class="late" style="font-size:13px">Motivo: '+esc(it.m)+'</div>':'')+'</div><span>'+stDe(it)+'</span></div>'}).join('')).join(''):'<div class="task">Nenhum pedido ainda.</div>')+'</div>';
+}
+function pedidosAdmin(){
+  const ps=pedidosOrdenados().slice(0,20);
+  return '<div class="card"><b>Pedidos do João</b><div style="font-size:13px;color:#777;margin-top:4px">Cada administrador escolhe qual prêmio assume. Pode ser um, outro ou os dois.</div>'+(ps.length?ps.map(p=>'<div style="margin-top:12px;font-size:13px;color:#777">Pedido de '+esc(br(p.data))+' '+esc(p.hora||'')+'</div>'+Object.keys(p.itens||{}).sort().map(k=>{
+    const it=p.itens[k];
+    let acao='';
+    if(it.s==='pedido')acao='<button onclick="assumir(\''+p.id+'\',\''+k+'\')">'+(it.doa?'Aceitar':'Assumir')+'</button><button class="red" onclick="recusar(\''+p.id+'\',\''+k+'\')">Recusar</button>';
+    else if(it.s==='assumido')acao='<button class="verde" onclick="entregarItem(\''+p.id+'\',\''+k+'\')">'+(it.doa?'Doação feita':'Entregue')+'</button>';
+    return '<div class="task"><div class="mini-ico">'+iconePremio(it.nome)+'</div><div class="info"><div class="name">'+esc(it.nome)+'</div><small>'+(+it.custo||0)+' moedas · '+stDe(it)+(it.por?' · '+esc(it.por):'')+'</small>'+(it.s==='recusado'&&it.m?'<div class="late" style="font-size:13px">'+esc(it.m)+'</div>':'')+'</div>'+acao+'</div>';
+  }).join('')).join(''):'<div class="task">Nenhum pedido ainda.</div>')+'</div>';
+}
+const sonhoNome=()=>{const r=S&&S.resgates;return(r&&typeof r==='object'&&!Array.isArray(r)&&r.sonho)?r.sonho:null};
+function definirSonho(i){
+  if(admin())return;
+  const p=S.premios[i];if(!p)return;
+  const novo=sonhoNome()===p.nome?'':p.nome;
+  if(!S.resgates||typeof S.resgates!=='object'||Array.isArray(S.resgates))S.resgates={};
+  S.resgates.sonho=novo;
+  gravar({'resgates.sonho':novo});
+  logar('prêmio',novo?'João escolheu como sonho: '+novo:'João tirou o sonho: '+p.nome);
+  desenhar();
+}
+function cartaoSonho(){
+  const p=S.premios.find(x=>x.nome===sonhoNome()&&x.custo>0);if(!p)return '';
+  const disp=Math.max(0,disponivel()),falta=p.custo-disp,pct=Math.min(100,Math.round(disp/p.custo*100));
+  return '<div class="card" style="padding:10px 14px"><div style="display:flex;align-items:center;gap:10px"><div class="mini-ico">'+iconePremio(p.nome)+'</div><div style="flex:1;min-width:0"><b>⭐ Meu sonho: '+esc(p.nome)+'</b><div class="bar" style="height:14px"><div style="width:'+pct+'%;background:#ffb300"></div></div><small style="color:#555">'+(falta>0?'Faltam '+falta+' moedas':'🎉 Você já tem as moedas! Vá em Prêmios para pedir.')+'</small></div></div></div>';
+}
+function cartaoSonhoAdmin(){
+  const p=S.premios.find(x=>x.nome===sonhoNome()&&x.custo>0);
+  if(!p)return '<div class="card"><b>⭐ Sonho do João</b><div style="color:#777;margin-top:6px">O João ainda não escolheu um prêmio como sonho.</div></div>';
+  const falta=p.custo-Math.max(0,disponivel());
+  return '<div class="card"><b>⭐ Sonho do João</b><div style="margin-top:6px">'+iconePremio(p.nome)+' '+esc(p.nome)+' ('+p.custo+' moedas) · '+(falta>0?'faltam '+falta:'já tem as moedas')+'</div></div>';
+}
+function telaPremios(){
+  const disp=disponivel();
+  let html='<div class="card"><b>Prêmios</b><div style="font-size:13px;color:#555;margin-top:4px">Moedas disponíveis: '+disp+(reservado()?' ('+reservado()+' reservadas em pedidos)':'')+'</div>';
+  S.premios.forEach((p,i)=>{
+    const pct=p.custo>0?Math.min(100,Math.round(Math.max(0,disp)/p.custo*100)):0;
+    const sel=carrinho.includes(p.nome);
+    const sonho=sonhoNome()===p.nome;
+    html+='<div class="premio"><div class="ico" style="background:#fff0c2">'+iconePremio(p.nome)+'</div><div class="info"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><span>'+esc(p.nome)+' — '+(+p.custo||0)+' moedas'+(admin()&&sonho?' ⭐':'')+'</span>'+(!admin()?'<button class="ib" style="width:32px;height:32px;font-size:16px;flex:none" title="Meu sonho" aria-label="Meu sonho" onclick="definirSonho('+i+')">'+(sonho?'⭐':'☆')+'</button>':'')+'</div><div class="bar"><div style="width:'+pct+'%;background:'+(p.custo>0&&disp>=p.custo?'#3bb273':'#ffb300')+'"></div></div>'+(p.custo>0&&disp>=p.custo?'<div style="font-size:12px;font-weight:700;color:#1f8a55;margin-top:3px">✅ Já dá para resgatar!</div>':'')+'</div>'+(!admin()&&p.custo>0?'<button class="'+(sel?'red':'')+'" onclick="toggleSim('+i+')">'+(sel?'Tirar da simulação':'Simular Resgate')+'</button>':'')+'</div>';
+  });
+  html+='</div>';
+  if(!admin())html+=cartaoSimulacao()+cartaoDoar()+meusPedidos();else html+=pedidosAdmin();
+  return html;
+}
+function cartaoPresenteou(){
+  const m={};
+  Object.values(S.pedidos||{}).forEach(p=>Object.values(p.itens||{}).forEach(it=>{
+    if(!it.doa&&(it.s==='assumido'||it.s==='entregue')){const k=it.por||'?';m[k]=m[k]||{n:0,c:0};m[k].n++;m[k].c+=+it.custo||0}
+  }));
+  const l=Object.keys(m).map(k=>({l:k,v:m[k].n,sub:m[k].n+' prêmio(s) · '+m[k].c+' moedas'})).sort((a,b)=>b.v-a.v);
+  return '<div class="card"><b>Quem está presenteando o João</b>'+(l.length?hbar(l,'#e91e63'):'<div style="color:#777;margin-top:6px">Ainda não há prêmios entregues.</div>')+'</div>';
+}
+
+/* ---------- penalidades ---------- */
+function aplicarPenalidade(i){
+  const p=(S.penalidades||[])[i];if(!p)return;
+  if(!confirm('Descontar '+p.valor+' moedas por: '+p.nome+'?'))return;
+  const antesSaldo=S.moedas;
+  let novo=S.moedas-p.valor;
+  if(!S.saldoNegativo&&novo<0)novo=0;
+  const tirou=antesSaldo-novo;
+  S.moedas=novo;
+  S.descontos=S.descontos||[];
+  const desc={id:Date.now(),motivo:p.nome,valor:tirou,data:hoje(),p:quem()};
+  S.descontos.push(desc);
+  gravar({moedas:increment(-tirou),descontos:arrayUnion(desc)});
+  logar('penalidade',quem()+' descontou '+tirou+' moedas: '+p.nome);
+  desenhar();
+}
+function telaDescontos(){
+  const l=(S.descontos||[]).slice().reverse();
+  let html='<div class="card"><b>Moedas descontadas</b>';
+  html+=l.length?l.map(d=>'<div class="task"><div class="info"><div class="name">'+esc(d.motivo)+'</div><small>'+esc(d.data)+'</small></div><b class="late">-'+(+d.valor||0)+'</b></div>').join(''):'<div class="task">Nenhum desconto. Continue assim!</div>';
+  return html+'</div>';
+}
+
+/* ---------- aprovar e resumo (admin) ---------- */
+function telaAprovar(){
+  const ap=pendentesAprov();
+  let html='<div class="card"><b>Tarefas aguardando aprovação ('+ap.length+')</b>'+(ap.length?ap.map(x=>'<div class="task"><div class="info"><div class="name">'+esc(x.t.nome)+'</div><small>'+esc(x.data)+' · marcada '+esc(x.h)+' · vale '+moedasDe(x.t)+' moedas</small></div><button onclick="aprovar(\''+x.data+'\','+x.t.id+')">Aprovar</button><button class="ib" title="Aprovar com elogio" aria-label="Aprovar com elogio" onclick="aprovar(\''+x.data+'\','+x.t.id+',true)">💬</button><button class="red" onclick="rejeitar(\''+x.data+'\','+x.t.id+')">Rejeitar</button></div>').join(''):'<div class="task">Nada aguardando</div>')+'</div>';
+  const pb=pendentesBem();
+  html+='<div class="card"><b>Atitudes do bem aguardando ('+pb.length+')</b>'+(pb.length?pb.map(b=>'<div class="task"><div class="info"><div class="name">'+esc(b.nome)+'</div><small>'+esc(b.data)+' · '+esc(b.hora||'')+' · '+(b.livre?'texto do João: você escolhe as moedas':'vale '+(+b.moedas||0)+' moedas')+'</small></div><button onclick="aprovarBem(\''+b.id+'\')">'+(b.livre?'Dar moedas':'Aprovar')+'</button><button class="ib" title="Aprovar com elogio" aria-label="Aprovar com elogio" onclick="aprovarBem(\''+b.id+'\',true)">💬</button><button class="red" onclick="rejeitarBem(\''+b.id+'\')">Rejeitar</button></div>').join(''):'<div class="task">Nada aguardando</div>')+'</div>';
+  return html;
+}
+function telaResumo(){
+  const h=S.historico[hoje()]||{}, at=ativas();
+  const feitas=at.filter(t=>['feita','aprovada'].includes(estado(h[t.id]))).length, pend=at.filter(t=>!h[t.id]), atr=at.filter(t=>atrasada(t));
+  let html='<div class="card"><b>Hoje</b><div style="margin-top:8px">'+feitas+' de '+at.length+' tarefas concluídas</div><div class="bar"><div style="width:'+(at.length?Math.round(feitas/at.length*100):0)+'%"></div></div></div>';
+  html+=cartaoHumor();
+  if(atr.length)html+='<div class="card"><b class="late">Atrasadas</b>'+atr.map(t=>'<div class="task">'+esc(t.nome)+' (era '+esc(t.hora)+')</div>').join('')+'</div>';
+  html+='<div class="card"><b>Pendentes</b>'+(pend.length?pend.map(t=>'<div class="task">'+esc(t.nome)+'</div>').join(''):'<div class="task">Tudo feito!</div>')+'</div>';
+  html+=cartaoSonhoAdmin()+cartaoBichoAdmin()+conversaSemana();
+  return html;
+}
+const MOTIVOS_FOLGA=[['doente','🤒 Doente'],['viagem','✈️ Viagem'],['feriado','🎉 Feriado'],['outro','🌴 Outro']];
+const nomeFolga=f=>{const m=MOTIVOS_FOLGA.find(x=>x[0]===(f&&f.m));return m?m[1]:'🌴 Folga'};
+function cartaoFolga(){
+  const f=folgaDe(hoje());if(!f)return '';
+  return '<div class="card" style="background:#e8fff3"><b>🏖️ Dia de folga ('+esc(nomeFolga(f))+')</b><div style="margin-top:6px;font-size:14px">'+(admin()?'Hoje as tarefas não contam nas metas nem na análise.':'Hoje você descansa! As tarefas de hoje não contam. Aproveite!')+'</div></div>';
+}
+function marcarFolga(){
+  const ds=valEd('fo_data');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(ds)||isNaN(new Date(ds+'T12:00:00')))return alert('Escolha a data da folga.');
+  const m=valEd('fo_motivo');const mm=MOTIVOS_FOLGA.some(x=>x[0]===m)?m:'outro';
+  S.folgas=S.folgas||{};S.folgas[ds]={m:mm,p:quem()};
+  gravar({['folgas.'+ds]:S.folgas[ds]});
+  logar('config','Dia de folga marcado: '+br(ds)+' ('+mm+')');desenhar();
+}
+function tirarFolga(ds){
+  if(!folgaDe(ds))return;
+  if(!confirm('Remover a folga de '+br(ds)+'? As tarefas desse dia voltam a contar.'))return;
+  delete S.folgas[ds];gravar({['folgas.'+ds]:deleteField()});
+  logar('config','Dia de folga removido: '+br(ds));desenhar();
+}
+function cartaoFolgaAdmin(){
+  const l=Object.keys(S.folgas||{}).sort().reverse().slice(0,8);
+  return '<div class="card"><b>🏖️ Dia de folga</b><div style="font-size:13px;color:#777;margin-top:4px">Doente, viagem ou feriado: o dia não conta nas metas nem na análise.</div><label>Data</label><input id="fo_data" type="date" value="'+hoje()+'"><label>Motivo</label><select id="fo_motivo">'+MOTIVOS_FOLGA.map(x=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('')+'</select><button onclick="marcarFolga()">Marcar folga</button>'+(l.length?'<div style="margin-top:10px;font-weight:700;font-size:14px">Folgas marcadas</div>'+l.map(ds=>'<div class="task"><div class="info">'+esc(br(ds)+'/'+ds.slice(0,4))+' · '+esc(nomeFolga(S.folgas[ds]))+'</div><button class="ib red" title="Remover folga" aria-label="Remover folga" onclick="tirarFolga(\''+ds+'\')">🗑️</button></div>').join(''):'')+'</div>';
+}
+function conversaSemana(){
+  const seg=segundaDaSemana(),M=mapas();
+  const C=agrega(fmt(seg),hoje(),M),P=agrega(fmt(addDias(seg,-7)),fmt(addDias(seg,-1)),M);
+  const l=[];
+  Object.keys(C.porT).forEach(id=>{
+    const o=C.porT[id],q=P.porT[id],t=S.tarefas.find(x=>String(x.id)===id);
+    if(!t||!o.esp)return;
+    const pc=Math.round((o.feito+o.pend)/o.esp*100);
+    const pp=(q&&q.esp)?Math.round((q.feito+q.pend)/q.esp*100):null;
+    l.push({nome:t.nome,pc:pc,pp:pp,d:pp===null?null:pc-pp,nm:o.nm||0,esp:o.esp});
+  });
+  let html='<div class="card"><b>💬 Conversa da semana</b><div style="font-size:12px;color:#777">Da segunda até hoje, comparada com a semana passada.</div>';
+  if(!l.length)return html+'<div style="margin-top:8px;color:#777">Ainda não há dados suficientes esta semana.</div></div>';
+  const mel=l.filter(x=>x.d!==null&&x.d>0).sort((a,b)=>b.d-a.d||b.pc-a.pc)[0];
+  const aten=l.filter(x=>x.pc<100).sort((a,b)=>a.pc-b.pc||b.nm-a.nm)[0];
+  if(mel)html+='<div class="ins" style="margin-top:10px">✨ <b>Mais melhorou:</b> '+esc(mel.nome)+' ('+mel.pp+'% → '+mel.pc+'%).<br><small style="color:#555">Puxe assunto: “O que te ajudou a ir melhor em '+esc(mel.nome)+'?”</small></div>';
+  else html+='<div class="ins" style="margin-top:10px">✨ Nenhuma tarefa melhorou em relação à semana passada ainda. Que tal elogiar o esforço geral?</div>';
+  if(aten)html+='<div class="ins">⚠️ <b>Merece atenção:</b> '+esc(aten.nome)+' ('+aten.pc+'%'+(aten.nm?', '+aten.nm+' sem marcar':'')+').<br><small style="color:#555">Puxe assunto: “O que está dificultando '+esc(aten.nome)+'? Como posso ajudar?”</small></div>';
+  else html+='<div class="ins">🎉 Nenhuma tarefa pede atenção: tudo 100% até agora!</div>';
+  return html+'</div>';
+}
+function telaAcoes(){
+  let html=telaAprovar();
+  const bem=S.atitudes||[];
+  html+='<div class="card"><b>Atitudes do bem</b>'+(bem.length?bem.map(a=>'<div class="task"><div class="info">'+esc(a.nome)+'<br><small>+'+(+a.moedas||0)+' moedas</small></div><button class="verde" onclick="registrarBem('+a.id+')">Registrar</button></div>').join(''):'<div class="task">Crie atitudes em Config</div>')+'</div>';
+  const pens=S.penalidades||[];
+  html+='<div class="card"><b>Descontar moedas</b>'+(pens.length?pens.map((p,i)=>'<div class="task"><div class="info">'+esc(p.nome)+'<br><small>-'+(+p.valor||0)+' moedas</small></div><button class="red" onclick="aplicarPenalidade('+i+')">Descontar</button></div>').join(''):'<div class="task">Crie penalidades em Config</div>')+'</div>';
+  html+=cartaoFolgaAdmin();
+  return html;
+}
+/* ---------- análise (aba Metas) ---------- */
+const br=ds=>String(ds||'').slice(8)+'/'+String(ds||'').slice(5,7);
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const addDias=(d,n)=>{const x=new Date(d);x.setHours(12,0,0,0);x.setDate(x.getDate()+n);return x};
+const segundaDeData=d=>{const x=new Date(d);x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+function datasEntre(a,b){
+  const l=[];const d=new Date(a+'T12:00:00');const f=new Date(b+'T12:00:00');let n=0;
+  while(d<=f&&n<4000){l.push(fmt(d));d.setDate(d.getDate()+1);n++}
+  return l;
+}
+function inicioDados(){
+  let m=hoje();
+  Object.keys(S.historico||{}).forEach(k=>{if(k<m)m=k});
+  S.tarefas.forEach(t=>{if(t.id>1e12){const k=fmt(new Date(t.id));if(k<m)m=k}});
+  return m;
+}
+const criadaApos=(t,ds)=>t.id>1e12&&fmt(new Date(t.id))>ds;
+function mapas(){
+  const col={},gas={},per={},doa={},bic={};
+  const add=(m,k,v)=>{if(k)m[k]=(m[k]||0)+v};
+  Object.keys(S.historico||{}).forEach(ds=>{
+    const h=S.historico[ds];
+    Object.keys(h).forEach(id=>{
+      if(id===HUMOR_KEY)return;
+      const e=estado(h[id]);
+      if(e==='aprovada'||e==='feita'){
+        const t=S.tarefas.find(x=>String(x.id)===id);
+        const v=(h[id]&&typeof h[id]==='object'&&h[id].v!=null)?(+h[id].v||0):(t?moedasDe(t):0);
+        add(col,ds,v);
+      }
+    });
+  });
+  Object.values(S.bemReg||{}).forEach(b=>{if(b.s==='aprovada')add(col,b.data,+b.moedas||0)});
+  (S.conquistas||[]).forEach(c=>{add(col,fmt(addDias(new Date(c.semana+'T12:00:00'),6)),+c.bonus||0)});
+  Object.values(S.pedidos||{}).forEach(p=>Object.values(p.itens||{}).forEach(it=>{if(it.s==='assumido'||it.s==='entregue')add(it.doa?doa:gas,it.dAss||p.data,+it.custo||0)}));
+  (S.descontos||[]).forEach(d=>add(per,d.data,+d.valor||0));
+  Object.keys(baseBicho().gasto||{}).forEach(ds=>add(bic,ds,+baseBicho().gasto[ds]||0));
+  return {col:col,gas:gas,per:per,doa:doa,bic:bic};
+}
+function agrega(ini,fim,M,filtro){
+  const r={esp:0,feito:0,rej:0,pend:0,col:0,gas:0,per:0,doa:0,bic:0,porT:{}};
+  const hj=hoje();
+  const i0=inicioDados();
+  datasEntre(ini,fim).forEach(ds=>{
+    if(ds>hj||ds<i0)return;
+    const d=new Date(ds+'T12:00:00');const h=(S.historico||{})[ds]||{};
+    doModo().forEach(t=>{
+      if(filtro&&!filtro(t))return;
+      if(!valeNoDia(t,d)||criadaApos(t,ds))return;
+      const e=estado(h[t.id]);
+      if(ds===hj&&!e)return;
+      const o=r.porT[t.id]=r.porT[t.id]||{esp:0,feito:0,rej:0,pend:0,nm:0};
+      r.esp++;o.esp++;
+      if(!e)o.nm++;
+      if(e==='feita'||e==='aprovada'){r.feito++;o.feito++}
+      else if(e==='rejeitada'){r.rej++;o.rej++}
+      else if(e==='pendente'){r.pend++;o.pend++}
+    });
+    r.col+=M.col[ds]||0;r.gas+=M.gas[ds]||0;r.per+=M.per[ds]||0;r.doa+=(M.doa||{})[ds]||0;r.bic+=(M.bic||{})[ds]||0;
+  });
+  return r;
+}
+function baldes(){
+  const hj=hoje();
+  const r=new Date(ui.ref);r.setHours(12,0,0,0);
+  const per=ui.per;
+  if(per==='dia'){
+    const s=fmt(r);
+    return {titulo:(s===hj?'Hoje, ':'')+br(s)+'/'+s.slice(0,4),ini:s,fim:s,itens:[['manha','Manhã'],['tarde','Tarde'],['noite','Noite']].map(x=>({l:x[1],ini:s,fim:s,f:t=>periodo(t)===x[0]}))};
+  }
+  if(per==='semana'){
+    const seg=segundaDeData(r);const itens=[];
+    for(let i=0;i<7;i++){const d=addDias(seg,i),s=fmt(d);itens.push({l:NOMEDIA[d.getDay()]+' '+s.slice(8),ini:s,fim:s})}
+    return {titulo:'Semana de '+br(itens[0].ini)+' a '+br(itens[6].ini),ini:itens[0].ini,fim:itens[6].fim,itens:itens};
+  }
+  if(per==='mes'){
+    const y=r.getFullYear(),m=r.getMonth(),ult=new Date(y,m+1,0).getDate();const itens=[];
+    for(let i=1;i<=ult;i++){const s=y+'-'+String(m+1).padStart(2,'0')+'-'+String(i).padStart(2,'0');itens.push({l:String(i),ini:s,fim:s})}
+    return {titulo:MESES[m]+' de '+y,ini:itens[0].ini,fim:itens[ult-1].fim,itens:itens};
+  }
+  if(per==='ano'){
+    const y=r.getFullYear(),itens=[];
+    for(let m=0;m<12;m++){const ult=new Date(y,m+1,0).getDate(),mm=String(m+1).padStart(2,'0');itens.push({l:MESES[m].slice(0,3),ini:y+'-'+mm+'-01',fim:y+'-'+mm+'-'+String(ult).padStart(2,'0')})}
+    return {titulo:String(y),ini:itens[0].ini,fim:itens[11].fim,itens:itens};
+  }
+  const ini=inicioDados(),itens=[];
+  const d0=new Date(ini+'T12:00:00');
+  const dias=Math.round((new Date(hj+'T12:00:00')-d0)/86400000);
+  if(dias<=140){
+    let seg=segundaDeData(d0);
+    while(fmt(seg)<=hj){itens.push({l:br(fmt(seg)),ini:fmt(seg),fim:fmt(addDias(seg,6))});seg=addDias(seg,7)}
+  }else{
+    let y=d0.getFullYear(),m=d0.getMonth();const n=new Date();
+    while(y*12+m<=n.getFullYear()*12+n.getMonth()){
+      const ult=new Date(y,m+1,0).getDate(),mm=String(m+1).padStart(2,'0');
+      itens.push({l:MESES[m].slice(0,3)+'/'+String(y).slice(2),ini:y+'-'+mm+'-01',fim:y+'-'+mm+'-'+String(ult).padStart(2,'0')});
+      m++;if(m>11){m=0;y++}
+    }
+  }
+  return {titulo:'Desde '+br(ini)+'/'+ini.slice(0,4),ini:itens[0].ini,fim:itens[itens.length-1].fim,itens:itens};
+}
+function setPer(p){ui.per=p;ui.ref=new Date();desenhar()}
+function moverPer(n){
+  const r=new Date(ui.ref);r.setHours(12,0,0,0);
+  if(ui.per==='dia')r.setDate(r.getDate()+n);
+  else if(ui.per==='semana')r.setDate(r.getDate()+7*n);
+  else if(ui.per==='mes')r.setMonth(r.getMonth()+n,1);
+  else if(ui.per==='ano')r.setFullYear(r.getFullYear()+n,0,1);
+  const hj=new Date();hj.setHours(12,0,0,0);
+  ui.ref=r>hj?hj:r;
+  desenhar();
+}
+function graf(labels,series,o){
+  const W=320,H=170,pl=30,pr=6,pt=12,pb=24;
+  const n=labels.length;
+  if(!n)return '<div style="color:#777">Sem dados</div>';
+  const mx=o.max!=null?o.max:Math.max(1,...series.flatMap(s=>s.v.map(x=>+x||0)));
+  const iw=W-pl-pr,ih=H-pt-pb;
+  const sy=v=>pt+ih-(Math.min(+v||0,mx)/mx)*ih;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img">';
+  [0,0.5,1].forEach(f=>{const y=pt+ih-f*ih;s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y+'" y2="'+y+'" stroke="#e3e7ee"/><text x="'+(pl-4)+'" y="'+(y+3)+'" font-size="9" text-anchor="end" fill="#777">'+Math.round(mx*f)+'</text>'});
+  const bw=iw/n;
+  if(o.tipo==='linha'){
+    series.forEach(se=>{
+      const pts=se.v.map((v,i)=>(pl+bw*i+bw/2)+','+sy(v)).join(' ');
+      s+='<polyline fill="none" stroke="'+se.cor+'" stroke-width="2.5" points="'+pts+'"/>';
+      if(n<=40)se.v.forEach((v,i)=>{s+='<circle cx="'+(pl+bw*i+bw/2)+'" cy="'+sy(v)+'" r="2.5" fill="'+se.cor+'"/>'});
+    });
+  }else{
+    const k=series.length,gw=bw*0.8,sw=gw/k;
+    series.forEach((se,j)=>se.v.forEach((v,i)=>{
+      const x=pl+bw*i+(bw-gw)/2+sw*j,y=sy(v);
+      s+='<rect x="'+x+'" y="'+y+'" width="'+Math.max(1,sw-1)+'" height="'+Math.max(0,pt+ih-y)+'" rx="2" fill="'+se.cor+'"/>';
+      if(n<=12&&(+v||0)>0)s+='<text x="'+(x+sw/2)+'" y="'+(y-2)+'" font-size="8" text-anchor="middle" fill="#444">'+(o.fmt?o.fmt(v):v)+'</text>';
+    }));
+  }
+  const passo=Math.ceil(n/8);
+  labels.forEach((l,i)=>{if(i%passo===0)s+='<text x="'+(pl+bw*i+bw/2)+'" y="'+(H-8)+'" font-size="9" text-anchor="middle" fill="#555">'+esc(l)+'</text>'});
+  s+='</svg>';
+  s+='<div style="font-size:'+(o.mini?9:12)+'px;margin-top:4px">'+series.map(se=>'<span style="display:inline-block;width:10px;height:10px;background:'+se.cor+';border-radius:2px;margin-right:4px"></span>'+esc(se.nome)).join(' &nbsp; ')+'</div>';
+  return s;
+}
+function hbar(items,cor,max){
+  if(!items.length)return '';
+  const mx=max!=null?max:Math.max(1,...items.map(i=>i.v));
+  return items.map(i=>'<div class="hb"><div class="t"><span>'+esc(i.l)+'</span><span>'+esc(i.sub!=null?i.sub:i.v)+'</span></div><div class="b"><div style="width:'+Math.max(2,Math.min(100,Math.round(i.v/mx*100)))+'%;background:'+(i.cor||cor)+'"></div></div></div>').join('');
+}
+const STOP=new Set(['de','da','do','das','dos','as','os','em','na','no','nas','nos','uma','que','nao','foi','ser','para','por','com','mas','ainda','muito','mais','porque','isso','isto','esta','estava','tava','voce','mesmo','tem','ter','fez','fazer','feita','feito','tarefa','ele','ela','sua','seu','meu','minha','como','quando','pois','nem','aos','pela','pelo','esse','essa','sem','era','sao','estou','esta']);
+function analiseRej(ini,fim){
+  const rej=[];
+  datasEntre(ini,fim).forEach(ds=>{
+    if(ds>hoje())return;
+    const h=(S.historico||{})[ds]||{};
+    Object.keys(h).forEach(id=>{
+      if(id===HUMOR_KEY)return;
+      const r=h[id];
+      if(estado(r)==='rejeitada'){
+        const t=S.tarefas.find(x=>String(x.id)===id);
+        rej.push({ds:ds,id:id,t:t,m:(r&&typeof r==='object'&&r.m)?r.m:''});
+      }
+    });
+  });
+  const porT={};
+  rej.forEach(x=>{const k=x.t?x.t.nome:'(tarefa removida)';porT[k]=(porT[k]||0)+1});
+  const top=Object.keys(porT).map(k=>({l:k,v:porT[k],sub:porT[k]+'×'})).sort((a,b)=>b.v-a.v).slice(0,5);
+  const mot={};
+  rej.forEach(x=>{if(!x.m)return;const k=semAcento(x.m);mot[k]=mot[k]||{n:0,txt:x.m};mot[k].n++});
+  const motivos=Object.values(mot).sort((a,b)=>b.n-a.n).slice(0,5);
+  const pal={};
+  rej.forEach(x=>{if(!x.m)return;semAcento(x.m).split(/[^a-z0-9]+/).forEach(w=>{if(w.length>=4&&!STOP.has(w))pal[w]=(pal[w]||0)+1})});
+  const palavras=Object.keys(pal).map(w=>({w:w,n:pal[w]})).sort((a,b)=>b.n-a.n).slice(0,6);
+  const per={manha:0,tarde:0,noite:0};
+  rej.forEach(x=>{if(x.t)per[periodo(x.t)]++});
+  const sem={};
+  rej.forEach(x=>{const d=new Date(x.ds+'T12:00:00').getDay();sem[d]=(sem[d]||0)+1});
+  return {total:rej.length,top:top,motivos:motivos,palavras:palavras,per:per,sem:sem,semMotivo:rej.filter(x=>!x.m).length};
+}
+function insightsRej(R,marcadas){
+  const ins=[];
+  if(!R.total){ins.push('Nenhuma tarefa rejeitada neste período.');return ins}
+  const pct=marcadas?Math.round(R.total/marcadas*100):0;
+  ins.push(R.total+' rejeição(ões) neste período'+(marcadas?', cerca de '+pct+'% das tarefas marcadas.':'.'));
+  if(R.top[0])ins.push('A tarefa mais rejeitada foi "'+R.top[0].l+'" ('+R.top[0].v+'×).');
+  if(R.motivos[0]&&R.motivos[0].n>=2)ins.push('O motivo que mais se repete: "'+R.motivos[0].txt+'" ('+R.motivos[0].n+'×).');
+  const pk=Object.keys(R.per).sort((a,b)=>R.per[b]-R.per[a])[0];
+  if(R.per[pk]>0)ins.push('A maioria das rejeições acontece em tarefas da '+NOMEP[pk].toLowerCase()+' ('+R.per[pk]+' de '+R.total+').');
+  const dk=Object.keys(R.sem).sort((a,b)=>R.sem[b]-R.sem[a])[0];
+  if(dk!==undefined&&R.total>=3)ins.push('O dia da semana com mais rejeições é '+NOMEDIA[dk]+' ('+R.sem[dk]+').');
+  if(R.palavras.length)ins.push('Palavras mais citadas nos motivos: '+R.palavras.map(p=>p.w+' ('+p.n+')').join(', ')+'.');
+  if(R.semMotivo)ins.push(R.semMotivo+' rejeição(ões) sem motivo registrado. Anote sempre o motivo para esta análise melhorar.');
+  return ins;
+}
+function telaAnalise(){
+  const B=baldes(),M=mapas(),per=ui.per;
+  const T=agrega(B.ini,B.fim,M);
+  const A=B.itens.map(b=>agrega(b.ini,b.fim,M,b.f));
+  const eng=x=>x.esp?Math.round((x.feito+x.pend)/x.esp*100):0;
+  const linha=per==='hist';
+  const nav=per==='hist'?'<div style="font-weight:700;margin:6px 0">'+esc(B.titulo)+'</div>':'<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0"><button onclick="moverPer(-1)">◀</button><b>'+esc(B.titulo)+'</b><button onclick="moverPer(1)">▶</button></div>';
+  let html='<div class="card"><b>Análise</b><div class="seg">'+[['dia','Dia'],['semana','Semana'],['mes','Mês'],['ano','Ano'],['hist','Histórico']].map(x=>'<button class="'+(per===x[0]?'on':'')+'" onclick="setPer(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>'+nav+'<div class="kpis"><div class="kpi"><b>'+eng(T)+'%</b><small>engajamento</small></div><div class="kpi"><b style="color:#3bb273">+'+T.col+'</b><small>moedas ganhas</small></div><div class="kpi"><b style="color:#ff9800">-'+T.gas+'</b><small>gastas em prêmios</small></div><div class="kpi"><b class="late">-'+T.per+'</b><small>perdidas em penalidades</small></div><div class="kpi"><b style="color:#e91e63">'+T.doa+'</b><small>💝 doadas</small></div>'+(T.bic?'<div class="kpi"><b style="color:#7e57c2">-'+T.bic+'</b><small>🐾 gastas no bichinho</small></div>':'')+'</div><small style="color:#777">Dados contados a partir de '+esc(br(inicioDados()))+'. Dias de folga não entram nas contas.</small></div>';
+  const lblC=per==='dia'?['Dia']:B.itens.map(b=>b.l);
+  const sc=per==='dia'?[T.col]:A.map(a=>a.col);
+  const sg=per==='dia'?[T.gas]:A.map(a=>a.gas);
+  html+='<div class="card"><div class="duo"><div><b style="font-size:12px">Engajamento do João</b><div style="font-size:9px;color:#777">% das tarefas esperadas que ele marcou.</div>'+graf(B.itens.map(b=>b.l),[{nome:'Engajamento %',cor:'#3bb273',v:A.map(eng)}],{tipo:linha?'linha':'barra',max:100,fmt:v=>v+'%',mini:1})+'</div><div><b style="font-size:12px">Moedas ganhas e gastas</b><div style="font-size:9px;color:#777">Saldo atual: '+S.moedas+' moedas</div>'+graf(lblC,[{nome:'Ganhas',cor:'#3bb273',v:sc},{nome:'Gastas',cor:'#ff9800',v:sg}],{tipo:linha?'linha':'barra',mini:1})+'</div></div></div>';
+  const lt=Object.keys(T.porT).map(id=>{
+    const o=T.porT[id];const t=S.tarefas.find(x=>String(x.id)===id);const fe=o.feito+o.pend;
+    return {l:t?t.nome:'(removida)',esp:o.esp,fe:fe,nm:o.nm||0,v:o.esp?Math.round(fe/o.esp*100):0};
+  }).filter(x=>x.esp>0);
+  const fmtT=x=>({l:x.l,v:x.v,sub:x.v+'% ('+x.fe+' de '+x.esp+(x.nm?', '+x.nm+' sem marcar':'')+')'});
+  const best=lt.slice().sort((a,b)=>b.v-a.v||b.esp-a.esp).slice(0,5).map(fmtT);
+  const nao=x=>x.esp-x.fe;
+  const worst=lt.filter(x=>nao(x)>0).sort((a,b)=>(nao(b)/b.esp)-(nao(a)/a.esp)||nao(b)-nao(a)||b.esp-a.esp).slice(0,5).map(x=>({l:x.l,v:Math.round(nao(x)/x.esp*100),sub:Math.round(nao(x)/x.esp*100)+'% não cumprida ('+nao(x)+' de '+x.esp+(x.nm?', '+x.nm+' sem marcar':'')+')'}));
+  html+='<div class="card"><b>5 tarefas mais cumpridas</b>'+(best.length?hbar(best,'#3bb273',100):'<div style="color:#777;margin-top:6px">Sem dados no período.</div>')+'</div>';
+  html+='<div class="card"><b>5 tarefas menos cumpridas</b>'+(worst.length?hbar(worst,'#d43b3b',100):'<div style="color:#777;margin-top:6px">Sem dados no período.</div>')+'<small style="color:#777;display:block;margin-top:8px">Ordem do maior para o menor percentual de não cumprimento. Tarefa que o João não marcou até o fim do dia conta como não cumprida; rejeitada também. O dia de hoje só entra se a tarefa já foi marcada; o que ficar sem marcar passa a contar na virada do dia.</small></div>';
+  const pm={};
+  (S.descontos||[]).forEach(d=>{if(d.data>=B.ini&&d.data<=B.fim){const k=d.motivo||'?';pm[k]=pm[k]||{n:0,v:0};pm[k].n++;pm[k].v+=+d.valor||0}});
+  const pl=Object.keys(pm).map(k=>({l:k,v:pm[k].v,sub:pm[k].n+'× · -'+pm[k].v+' moedas'})).sort((a,b)=>b.v-a.v).slice(0,5);
+  html+='<div class="card"><b>5 penalidades que mais tiraram moedas</b><div style="font-size:13px;margin-top:4px">Total perdido no período: <b class="late">-'+T.per+'</b> moedas</div>'+(pl.length?hbar(pl,'#d43b3b'):'<div style="color:#777;margin-top:6px">Nenhuma penalidade no período.</div>')+'</div>';
+  const R=analiseRej(B.ini,B.fim);
+  const marcadas=T.feito+T.pend+T.rej;
+  html+='<div class="card"><b>Tarefas rejeitadas</b>'+(R.top.length?hbar(R.top,'#ff7a59'):'')+(R.motivos.length?'<div style="margin-top:10px;font-weight:700;font-size:14px">Motivos mais citados</div>'+R.motivos.map(m=>'<div class="ins">• '+esc(m.txt)+' ('+m.n+'×)</div>').join(''):'')+'<div style="margin-top:10px;font-weight:700;font-size:14px">O que os dados indicam</div>'+insightsRej(R,marcadas).map(x=>'<div class="ins">• '+esc(x)+'</div>').join('')+'<small style="color:#777">Análise automática por contagem. Ela aponta padrões, não causas.</small></div>';
+  return html;
+}
+function telaMetas(){
+  return (admin()?telaAnalise():'')+telaProgresso()+cartaoPresenteou();
+}
+
+/* ---------- configurações (admin) ---------- */
+function telaAdmin(){
+  const cs=cfgSemana(),ci=cfgImp();
+  let html='';
+  html+='<div class="card"><b>Nova tarefa</b>'+
+  '<label>Nome da tarefa</label><input id="n_nome" placeholder="Ex: Arrumar a cama">'+
+  '<label>Tipo</label><select id="n_tipo"><option value="checklist">Lembrete</option><option value="alarme">Alarme com horário</option></select>'+
+  '<label>Horário (define manhã, tarde ou noite)</label><input id="n_hora" type="time" value="08:00">'+
+  '<label>Em qual horário escolar vale</label><select id="n_modo"><option value="todos">Todos os horários</option><option value="tarde">Só modo tarde</option><option value="manha">Só modo manhã</option></select>'+
+  '<label>Dias da semana em que vale</label><div>'+[1,2,3,4,5,6,0].map(x=>'<label style="display:inline-block;margin:2px 10px 6px 0;font-size:14px"><input type="checkbox" class="n_dia" style="width:auto;margin:0 4px 0 0" value="'+x+'" checked>'+NOMEDIA[x]+'</label>').join('')+'</div>'+
+  '<label>Ícone (Automático escolhe pelo nome)</label><select id="n_ic">'+optsIcones(ICONES_TAREFA,'')+'</select>'+
+  '<label>Importância (define as moedas)</label><select id="n_imp">'+IMPS.map(x=>'<option value="'+x.k+'">'+x.n+' ('+ci[x.k]+' moedas)</option>').join('')+'</select>'+
+  '<button onclick="adicionar()">Adicionar</button></div>';
+  html+='<div class="card"><b>Tarefas</b>';
+  S.tarefas.forEach(t=>{
+    const opts=(t.imp?'':'<option value="">Atual: '+moedasDe(t)+' moedas</option>')+IMPS.map(x=>'<option value="'+x.k+'" '+(t.imp===x.k?'selected':'')+'>'+x.n+' ('+ci[x.k]+')</option>').join('');
+    html+=editando==='t'+t.id?formTarefa(t):'<div class="task"><div class="mini-ico">'+iconeTarefa(t)+'</div><div class="info"><div class="name">'+esc(t.nome)+'</div><small>'+esc(t.hora)+' ('+NOMEP[periodo(t)]+') · '+(t.tipo==='alarme'?'Alarme':'Lembrete')+' · '+moedasDe(t)+' moedas · '+esc(t.modo)+'</small><label>Importância</label><select onchange="mudarImp('+t.id+',this.value)">'+opts+'</select><div style="margin-top:6px">'+[1,2,3,4,5,6,0].map(x=>'<label style="display:inline-block;margin:2px 8px 2px 0;font-size:13px"><input type="checkbox" style="width:auto;margin:0 3px 0 0" '+(diasDe(t).includes(x)?'checked ':'')+'onchange="mudarDia('+t.id+','+x+',this.checked)">'+NOMEDIA[x]+'</label>').join('')+'</div></div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'t'+t.id+'\')">✏️</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="remover('+t.id+')">🗑️</button></div></div>';
+  });
+  html+='</div>';
+  html+='<div class="card"><b>Penalidades</b>';
+  (S.penalidades||[]).forEach((p,i)=>{html+=editando==='pen'+i?formSimples('pen',i,p.nome,'Moedas a descontar',p.valor):'<div class="task"><div class="info">'+esc(p.nome)+' — '+(+p.valor||0)+' moedas</div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'pen'+i+'\')">✏️</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="tirarPenalidade('+i+')">🗑️</button></div></div>'});
+  html+='<label>Motivo do desconto</label><input id="pen_nome" placeholder="Ex: palavrão"><label>Moedas a descontar</label><input id="pen_valor" type="number" placeholder="Ex: 3"><button onclick="novaPenalidade()">Adicionar penalidade</button>';
+  html+='<label style="display:block;margin-top:12px"><input type="checkbox" style="width:auto;margin-right:8px" '+(S.saldoNegativo?'checked ':'')+'onchange="mudarNegativo(this.checked)">Permitir saldo negativo</label></div>';
+  html+='<div class="card"><b>Atitudes do bem</b>';
+  (S.atitudes||[]).forEach((a,i)=>{html+=editando==='bem'+i?formSimples('bem',i,a.nome,'Moedas que vale',a.moedas):'<div class="task"><div class="info">'+esc(a.nome)+' — '+(+a.moedas||0)+' moedas</div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'bem'+i+'\')">✏️</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="tirarAtitude('+i+')">🗑️</button></div></div>'});
+  html+='<label>Atitude do bem</label><input id="bem_nome" placeholder="Ex: ajudou a vó"><label>Moedas que vale</label><input id="bem_valor" type="number" placeholder="Ex: 5"><button onclick="novaAtitude()">Adicionar atitude</button></div>';
+  html+='<div class="card"><b>Prêmios</b>';
+  S.premios.forEach((p,i)=>{html+=editando==='pre'+i?formSimples('pre',i,p.nome,'Custo em moedas',p.custo,p.ic):'<div class="task"><div class="mini-ico">'+iconePremio(p.nome)+'</div><div class="info">'+esc(p.nome)+' — '+(+p.custo||0)+' moedas</div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'pre'+i+'\')">✏️</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="tirarPremio('+i+')">🗑️</button></div></div>'});
+  html+='<label>Nome do prêmio</label><input id="p_nome" placeholder="Ex: Sorvete"><label>Custo em moedas</label><input id="p_custo" type="number" placeholder="Ex: 30"><label>Ícone (Automático escolhe pelo nome)</label><select id="p_ic">'+optsIcones(ICONES_PREMIO,'')+'</select><button onclick="novoPremio()">Adicionar prêmio</button></div>';
+  html+='<div class="card"><b>💝 Causas para doar</b><div style="font-size:13px;color:#777">O João escolhe uma destas quando quer doar moedas.</div>';
+  causas().forEach((c,i)=>{html+=editando==='cau'+i?formSimples('cau',i,c.nome,null):'<div class="task"><div class="info">'+esc(c.nome)+'</div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'cau'+i+'\')">✏️</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="tirarCausa('+i+')">🗑️</button></div></div>'});
+  html+='<label>Nova causa</label><input id="cau_nome" placeholder="Ex: Campanha do agasalho"><button onclick="novaCausa()">Adicionar causa</button></div>';
+  html+=cartaoConfigBicho();
+  let ger='<div class="card"><b>Troféus e bônus da semana</b>'+
+  '<label>Bronze: % mínimo de cumprimento</label><input type="number" value="'+cs.bronze+'" onchange="mudarCfg(\'bronze\',this.value)">'+
+  '<label>Prata: % mínimo</label><input type="number" value="'+cs.prata+'" onchange="mudarCfg(\'prata\',this.value)">'+
+  '<label>Ouro: % mínimo</label><input type="number" value="'+cs.ouro+'" onchange="mudarCfg(\'ouro\',this.value)">'+
+  '<label>Bônus Bronze (moedas)</label><input type="number" value="'+cs.bBronze+'" onchange="mudarCfg(\'bBronze\',this.value)">'+
+  '<label>Bônus Prata (moedas)</label><input type="number" value="'+cs.bPrata+'" onchange="mudarCfg(\'bPrata\',this.value)">'+
+  '<label>Bônus Ouro (moedas)</label><input type="number" value="'+cs.bOuro+'" onchange="mudarCfg(\'bOuro\',this.value)">'+
+  '<small style="color:#777">A semana fecha no domingo. O bônus e o troféu entram na primeira vez que um administrador abrir o app na semana seguinte.</small></div>';
+  ger+='<div class="card"><b>Valor de cada importância (moedas)</b>'+IMPS.map(x=>'<label>'+x.n+'</label><input type="number" value="'+ci[x.k]+'" onchange="mudarImpCfg(\''+x.k+'\',this.value)">').join('')+'<small style="color:#777">Vale para as tarefas que usam esta importância. Tarefas antigas com número fixo continuam iguais até você escolher uma importância para elas.</small></div>';
+  ger+='<div class="card"><b>Aprovação das tarefas</b><label style="display:block;margin-top:8px;font-size:15px;color:#222"><input type="checkbox" style="width:auto;margin-right:8px" '+(exigeAprov()?'checked ':'')+'onchange="mudarAprovacao(this.checked)">Exigir aprovação das tarefas</label><small style="color:#777">Desligando, tudo que está aguardando é aprovado na hora e as moedas entram.</small>'+
+  '<label style="display:block;margin-top:12px;font-size:15px;color:#222"><input type="checkbox" style="width:auto;margin-right:8px" '+(S.som!==false?'checked ':'')+'onchange="mudarSom(this.checked)">Som ao João concluir uma tarefa</label><small style="color:#777">No iPhone o som não toca se o aparelho estiver no modo silencioso.</small></div>';
+  ger+='<div class="card"><b>Horário em uso</b><select onchange="mudarModo(this.value)"><option value="tarde" '+(S.modo==='tarde'?'selected':'')+'>Tarde (este ano)</option><option value="manha" '+(S.modo==='manha'?'selected':'')+'>Manhã (ano que vem)</option></select></div>';
+  html+=ger;
+  return html;
+}
+function mudarModo(m){S.modo=m;salvar('modo');logar('config','Horário em uso: '+m);desenhar()}
+function adicionar(){
+  const nome=limpar(document.getElementById('n_nome').value,60);
+  if(!nome)return alert('Digite o nome da tarefa');
+  const hrv=document.getElementById('n_hora').value;
+  if(!horaOk(hrv))return alert('Escolha um horario valido');
+  const imp=document.getElementById('n_imp').value;
+  if(!IMPS.some(x=>x.k===imp))return alert('Escolha a importância');
+  if(!document.querySelector('.n_dia:checked'))return alert('Marque pelo menos um dia da semana');
+  S.tarefas.push({id:Date.now(),nome:nome,tipo:document.getElementById('n_tipo').value,hora:hrv,modo:document.getElementById('n_modo').value,dias:[...document.querySelectorAll('.n_dia')].filter(c=>c.checked).map(c=>+c.value),imp:imp,moedas:cfgImp()[imp]});
+  const ic0=(document.getElementById('n_ic')||{}).value;if(ICONES_TAREFA.some(x=>x[0]===ic0))S.tarefas[S.tarefas.length-1].ic=ic0;
+  salvar('tarefas');logar('config','Nova tarefa: '+nome+' ('+nomeImp(imp)+')');desenhar();
+}
+const optsIcones=(lista,sel)=>'<option value="">Automático</option>'+lista.map(x=>'<option value="'+x[0]+'" '+(sel===x[0]?'selected':'')+'>'+x[0]+' '+x[1]+'</option>').join('');
+const valEd=id=>{const e=document.getElementById(id);return e?e.value:''};
+function editar(k){editando=k;desenhar()}
+function cancelarEd(){editando=null;desenhar()}
+function formTarefa(t){
+  return '<div class="task" style="display:block"><b>Editar tarefa</b><label>Nome</label><input id="e_nome" value="'+esc(t.nome)+'">'+
+  '<label>Tipo</label><select id="e_tipo"><option value="checklist" '+(t.tipo!=='alarme'?'selected':'')+'>Lembrete</option><option value="alarme" '+(t.tipo==='alarme'?'selected':'')+'>Alarme com horário</option></select>'+
+  '<label>Horário</label><input id="e_hora" type="time" value="'+esc(t.hora||'08:00')+'">'+
+  '<label>Em qual horário escolar vale</label><select id="e_modo"><option value="todos" '+(t.modo==='todos'?'selected':'')+'>Todos os horários</option><option value="tarde" '+(t.modo==='tarde'?'selected':'')+'>Só modo tarde</option><option value="manha" '+(t.modo==='manha'?'selected':'')+'>Só modo manhã</option></select>'+
+  '<label>Ícone</label><select id="e_ic">'+optsIcones(ICONES_TAREFA,t.ic||'')+'</select>'+
+  '<div style="display:flex;gap:8px;margin-top:6px"><button class="verde" onclick="salvarTarefa('+t.id+')">Salvar</button><button class="red" onclick="cancelarEd()">Cancelar</button></div><small style="color:#777">Importância e dias da semana mudam na lista, depois de salvar.</small></div>';
+}
+function formSimples(tp,i,nome,rotulo,valor,ic){
+  return '<div class="task" style="display:block"><b>Editar</b><label>Nome</label><input id="e_nome" value="'+esc(nome)+'">'+(rotulo===null?'':'<label>'+rotulo+'</label><input id="e_val" type="number" value="'+(+valor||0)+'">')+
+  (tp==='pre'?'<label>Ícone</label><select id="e_ic">'+optsIcones(ICONES_PREMIO,ic||'')+'</select>':'')+
+  '<div style="display:flex;gap:8px;margin-top:6px"><button class="verde" onclick="salvarSimples(\''+tp+'\','+JSON.stringify(i).replace(/"/g,'&quot;')+')">Salvar</button><button class="red" onclick="cancelarEd()">Cancelar</button></div></div>';
+}
+function salvarTarefa(id){
+  const t=S.tarefas.find(x=>x.id===id);if(!t)return;
+  const nome=limpar(valEd('e_nome'),60);
+  if(!nome)return alert('Digite o nome da tarefa');
+  const hr=valEd('e_hora');if(!horaOk(hr))return alert('Escolha um horário válido');
+  const tipo=valEd('e_tipo')==='alarme'?'alarme':'checklist';
+  const modo=['todos','tarde','manha'].includes(valEd('e_modo'))?valEd('e_modo'):'todos';
+  const ic=valEd('e_ic');
+  const antes=t.nome;
+  t.nome=nome;t.hora=hr;t.tipo=tipo;t.modo=modo;
+  if(ICONES_TAREFA.some(x=>x[0]===ic))t.ic=ic;else delete t.ic;
+  salvar('tarefas');logar('config','Tarefa editada: '+antes+(antes!==nome?' → '+nome:''));
+  editando=null;desenhar();
+}
+function salvarSimples(tp,i){
+  const nome=limpar(valEd('e_nome'),60);
+  if(!nome)return alert('Digite o nome');
+  if(tp==='pen'){
+    const p=(S.penalidades||[])[i];if(!p)return;const v=numOk(valEd('e_val'),1,1000);
+    if(v===null)return alert('Moedas: use um número de 1 a 1000');
+    const a=p.nome;p.nome=nome;p.valor=v;salvar('penalidades');logar('config','Penalidade editada: '+a+' → '+nome+' (-'+v+')');
+  }else if(tp==='bem'){
+    const p=(S.atitudes||[])[i];if(!p)return;const v=numOk(valEd('e_val'),1,1000);
+    if(v===null)return alert('Moedas: use um número de 1 a 1000');
+    const a=p.nome;p.nome=nome;p.moedas=v;salvar('atitudes');logar('config','Atitude do bem editada: '+a+' → '+nome+' (+'+v+')');
+  }else if(tp==='acs'){
+    const a=acsPorId(i);if(!a)return;const v=numOk(valEd('e_val'),0,1000);
+    if(v===null)return alert('Preço: use um número de 0 a 1000');
+    const antes=a.nome;
+    editarCatalogo(l=>{const x=l.find(y=>y.id===i);if(x){x.nome=nome;x.custo=v}});
+    logar('config','Adereço editado: '+antes+' → '+nome+' ('+v+' moedas)');
+  }else if(tp==='cau'){
+    const l=causas().map(c=>({nome:c.nome}));if(!l[i])return;
+    const a=l[i].nome;l[i].nome=nome;S.causas=l;salvar('causas');logar('config','Causa editada: '+a+' → '+nome);
+  }else{
+    const p=S.premios[i];if(!p)return;const v=numOk(valEd('e_val'),1,10000);
+    if(v===null)return alert('Custo: use um número de 1 a 10000');
+    const a=p.nome,ic=valEd('e_ic');p.nome=nome;p.custo=v;
+    if(ICONES_PREMIO.some(x=>x[0]===ic))p.ic=ic;else delete p.ic;
+    carrinho=carrinho.filter(x=>x!==a);
+    if(sonhoNome()===a){S.resgates.sonho=nome;gravar({'resgates.sonho':nome})}
+    salvar('premios');logar('config','Prêmio editado: '+a+' → '+nome+' ('+v+' moedas)');
+  }
+  editando=null;desenhar();
+}
+function mudarImp(id,k){
+  const t=S.tarefas.find(x=>x.id===id);if(!t||!k)return;
+  t.imp=k;t.moedas=moedasDe(t);
+  salvar('tarefas');logar('config','Importância de "'+t.nome+'": '+nomeImp(k));desenhar();
+}
+function mudarDia(id,d,marcado){
+  const t=S.tarefas.find(x=>x.id===id);if(!t)return;
+  let ds=diasDe(t).slice();
+  if(marcado&&!ds.includes(d))ds.push(d);
+  if(!marcado)ds=ds.filter(x=>x!==d);
+  if(!ds.length){alert('Marque pelo menos um dia');desenhar();return}
+  t.dias=ds;salvar('tarefas');logar('config','Dias de "'+t.nome+'" alterados');desenhar();
+}
+function remover(id){
+  {
+    const t=S.tarefas.find(x=>x.id===id);
+    if(!confirm('Excluir a tarefa "'+(t?t.nome:'')+'"? Isso não pode ser desfeito.'))return;
+    S.tarefas=S.tarefas.filter(x=>x.id!==id);
+    salvar('tarefas');logar('config','Tarefa excluída: '+(t?t.nome:id));desenhar();
+  }
+}
+function novaPenalidade(){
+  const n=limpar(document.getElementById('pen_nome').value,60),v=numOk(document.getElementById('pen_valor').value,1,1000);
+  if(!n)return alert('Digite o motivo');
+  if(v===null)return alert('Moedas: use um numero de 1 a 1000');
+  S.penalidades=S.penalidades||[];S.penalidades.push({nome:n,valor:v});
+  salvar('penalidades');logar('config','Nova penalidade: '+n+' (-'+v+')');desenhar();
+}
+function tirarPenalidade(i){const p=(S.penalidades||[])[i];if(!p||!confirm('Excluir a penalidade "'+p.nome+'"? Isso não pode ser desfeito.'))return;S.penalidades.splice(i,1);salvar('penalidades');logar('config','Penalidade excluída: '+(p?p.nome:i));desenhar()}
+function mudarNegativo(v){S.saldoNegativo=v;salvar('saldoNegativo');logar('config','Saldo negativo '+(v?'permitido':'bloqueado'));desenhar()}
+function novaAtitude(){
+  const n=limpar(document.getElementById('bem_nome').value,60),v=numOk(document.getElementById('bem_valor').value,1,1000);
+  if(!n)return alert('Digite a atitude');
+  if(v===null)return alert('Moedas: use um numero de 1 a 1000');
+  S.atitudes=S.atitudes||[];S.atitudes.push({id:Date.now(),nome:n,moedas:v});
+  salvar('atitudes');logar('config','Nova atitude do bem: '+n+' (+'+v+')');desenhar();
+}
+function tirarAtitude(i){const a=(S.atitudes||[])[i];if(!a||!confirm('Excluir a atitude do bem "'+a.nome+'"? Isso não pode ser desfeito.'))return;S.atitudes.splice(i,1);salvar('atitudes');logar('config','Atitude do bem excluída: '+(a?a.nome:i));desenhar()}
+function novoPremio(){
+  const n=limpar(document.getElementById('p_nome').value,60),c=numOk(document.getElementById('p_custo').value,1,10000);
+  if(!n)return alert('Digite o nome do premio');
+  if(c===null)return alert('Custo: use um numero de 1 a 10000');
+  const pn={nome:n,custo:c};const ic1=(document.getElementById('p_ic')||{}).value;if(ICONES_PREMIO.some(x=>x[0]===ic1))pn.ic=ic1;
+  S.premios.push(pn);
+  salvar('premios');logar('config','Novo prêmio: '+n+' ('+c+' moedas)');desenhar();
+}
+function tirarPremio(i){const p=S.premios[i];if(!p||!confirm('Excluir o prêmio "'+p.nome+'"? Isso não pode ser desfeito.'))return;S.premios.splice(i,1);salvar('premios');logar('config','Prêmio excluído: '+(p?p.nome:i));desenhar()}
+
+/* ---------- bichinho virtual ---------- */
+const TIPOS_BICHO=[['gato','🐱','Gatinho'],['cachorro','🐶','Cachorrinho'],['papagaio','🦜','Papagaio'],['porco','🐷','Porquinho'],['sapo','🐸','Sapinho']];
+const ESTAGIOS=[[0,'Bebê',0.5],[6,'Filhote',0.68],[15,'Jovem',0.84],[30,'Adulto',1],[50,'Lendário',1.12]];
+const SLOTS_BICHO=[['cabeca','Cabeça'],['rosto','Rosto'],['pescoco','Pescoço'],['corpo','Corpo'],['pernas','Pernas'],['meias','Meias'],['pes','Pés'],['mao','Brinquedo'],['fundo','Viagem'],['cor','Cor']];
+const SLOTS_ROUPA=['cabeca','rosto','pescoco','corpo','pernas','meias','pes','mao'];
+const ACS_PADRAO=[
+  {id:'p1',nome:'Cartola',ic:'🎩',slot:'cabeca',custo:8},{id:'p2',nome:'Coroa',ic:'👑',slot:'cabeca',custo:15},
+  {id:'p3',nome:'Boné',ic:'🧢',slot:'cabeca',custo:6},{id:'p4',nome:'Capelo',ic:'🎓',slot:'cabeca',custo:8},
+  {id:'p5',nome:'Chapéu de palha',ic:'👒',slot:'cabeca',custo:7},{id:'p6',nome:'Capacete',ic:'🪖',slot:'cabeca',custo:7},
+  {id:'p7',nome:'Laço',ic:'🎀',slot:'cabeca',custo:4},{id:'p28',nome:'Touca',ic:'🎅',slot:'cabeca',custo:6},
+  {id:'p8',nome:'Óculos escuros',ic:'🕶️',slot:'rosto',custo:6},{id:'p9',nome:'Óculos',ic:'👓',slot:'rosto',custo:5},
+  {id:'p10',nome:'Máscara de festa',ic:'🎭',slot:'rosto',custo:8},
+  {id:'p30',nome:'Gravata',ic:'👔',slot:'pescoco',custo:6},{id:'p14',nome:'Cachecol',ic:'🧣',slot:'pescoco',custo:6},
+  {id:'p31',nome:'Fone de ouvido',ic:'🎧',slot:'pescoco',custo:7},{id:'p33',nome:'Medalha',ic:'🏅',slot:'pescoco',custo:8},
+  {id:'p11',nome:'Camiseta',ic:'👕',slot:'corpo',custo:8},{id:'p12',nome:'Jaqueta',ic:'🧥',slot:'corpo',custo:10},
+  {id:'p13',nome:'Fantasia de herói',ic:'🦸',slot:'corpo',custo:20},{id:'p15',nome:'Colete',ic:'🦺',slot:'corpo',custo:7},
+  {id:'p16',nome:'Quimono',ic:'🥋',slot:'corpo',custo:12},{id:'p34',nome:'Biquíni',ic:'👙',slot:'corpo',custo:8},
+  {id:'p35',nome:'Maiô',ic:'🩱',slot:'corpo',custo:8},{id:'p36',nome:'Vestido',ic:'👗',slot:'corpo',custo:10},
+  {id:'p38',nome:'Shorts',ic:'🩳',slot:'pernas',custo:6},{id:'p39',nome:'Bermuda',ic:'🩳',slot:'pernas',custo:7},
+  {id:'p40',nome:'Sunga',ic:'🩲',slot:'pernas',custo:6},{id:'p41',nome:'Calça',ic:'👖',slot:'pernas',custo:8},
+  {id:'p42',nome:'Meias',ic:'🧦',slot:'meias',custo:4},
+  {id:'p17',nome:'Tênis',ic:'👟',slot:'pes',custo:8},{id:'p18',nome:'Bota',ic:'🥾',slot:'pes',custo:8},
+  {id:'p19',nome:'Chinelo',ic:'🩴',slot:'pes',custo:5},{id:'p20',nome:'Patins',ic:'🛼',slot:'pes',custo:12},
+  {id:'p43',nome:'Sapato',ic:'👞',slot:'pes',custo:8},{id:'p44',nome:'Sapatilha',ic:'🥿',slot:'pes',custo:7},
+  {id:'p21',nome:'Bola de futebol',ic:'⚽',slot:'mao',custo:5},{id:'p22',nome:'Bola de basquete',ic:'🏀',slot:'mao',custo:6},
+  {id:'p23',nome:'Ursinho',ic:'🧸',slot:'mao',custo:8},{id:'p24',nome:'Pipa',ic:'🪁',slot:'mao',custo:8},
+  {id:'p25',nome:'Guitarra',ic:'🎸',slot:'mao',custo:15},{id:'p26',nome:'Skate',ic:'🛹',slot:'mao',custo:12},
+  {id:'p27',nome:'Balão',ic:'🎈',slot:'mao',custo:4},
+  {id:'v1',nome:'Egito',ic:'🐪',slot:'fundo',custo:30},{id:'v2',nome:'Paris',ic:'🗼',slot:'fundo',custo:30},
+  {id:'v3',nome:'Japão',ic:'🗻',slot:'fundo',custo:30},{id:'v4',nome:'Nova York',ic:'🗽',slot:'fundo',custo:30},
+  {id:'v5',nome:'Safári',ic:'🦁',slot:'fundo',custo:25},{id:'v6',nome:'Floresta Amazônica',ic:'🌴',slot:'fundo',custo:25},
+  {id:'c1',nome:'Azul',ic:'🔵',slot:'cor',custo:10},{id:'c2',nome:'Verde',ic:'🟢',slot:'cor',custo:10},
+  {id:'c3',nome:'Roxo',ic:'🟣',slot:'cor',custo:10},{id:'c4',nome:'Rosa',ic:'🩷',slot:'cor',custo:10},
+  {id:'c5',nome:'Dourado',ic:'🟡',slot:'cor',custo:15},{id:'c6',nome:'Escuro',ic:'⚫',slot:'cor',custo:15},
+  {id:'c7',nome:'Arco-íris',ic:'🌈',slot:'cor',custo:25}
+];
+const COR_FILTRO={c1:'hue-rotate(160deg) saturate(1.5)',c2:'hue-rotate(95deg) saturate(1.4)',c3:'hue-rotate(235deg) saturate(1.6)',c4:'hue-rotate(-45deg) saturate(1.8) brightness(1.1)',c5:'sepia(1) saturate(3.5) brightness(1.1)',c6:'grayscale(1) brightness(.35)',c7:''};
+const FALA_VIAGEM={v1:'Chegamos ao Egito! Olha as pirâmides! 🐪',v2:'Paris! Que torre linda! 🗼',v3:'Japão! Adoro as flores de cerejeira! 🌸',v4:'Nova York! Olha a Estátua da Liberdade! 🗽',v5:'Safári! Quantos bichos! 🦁',v6:'Floresta Amazônica! Quanta natureza! 🌴'};
+const CENA_I='<svg viewBox="20 0 360 290" preserveAspectRatio="xMidYMax slice">';
+const CENAS={
+casa:CENA_I+`<defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ccbff"/><stop offset="1" stop-color="#e3f6ff"/></linearGradient><linearGradient id="gc2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6e66a"/><stop offset="1" stop-color="#55b94d"/></linearGradient></defs><rect width="400" height="290" fill="url(#gc)"/><circle cx="330" cy="52" r="46" fill="#fff3a6" opacity=".5"/><circle cx="330" cy="52" r="28" fill="#ffd93b"/><g fill="#fff"><ellipse cx="95" cy="62" rx="38" ry="14"/><ellipse cx="118" cy="52" rx="26" ry="14"/><ellipse cx="245" cy="98" rx="34" ry="12"/><ellipse cx="266" cy="89" rx="22" ry="11"/></g><path d="M0 190 Q90 140 190 190 T400 175 L400 290 L0 290Z" fill="#8fdc6b"/><path d="M0 225 Q120 190 250 225 T400 215 L400 290 L0 290Z" fill="url(#gc2)"/><rect x="40" y="150" width="12" height="62" fill="#8a5a2b"/><circle cx="46" cy="135" r="34" fill="#3fa34d"/><circle cx="26" cy="152" r="22" fill="#4fbf5a"/><circle cx="68" cy="152" r="22" fill="#4fbf5a"/><circle cx="50" cy="118" r="5" fill="#ff5a5a"/><circle cx="32" cy="140" r="5" fill="#ff5a5a"/><circle cx="66" cy="146" r="5" fill="#ff5a5a"/><g><circle cx="300" cy="262" r="5" fill="#ff6fa5"/><circle cx="330" cy="272" r="5" fill="#ffd93b"/><circle cx="110" cy="268" r="5" fill="#b57bff"/><circle cx="360" cy="255" r="5" fill="#ff6fa5"/><circle cx="20" cy="262" r="5" fill="#ffd93b"/></g><text x="300" y="215" font-size="26">🦋</text></svg>`,
+v1:CENA_I+`<defs><linearGradient id="ge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8f4d"/><stop offset=".55" stop-color="#ffcf70"/><stop offset="1" stop-color="#fff0b8"/></linearGradient></defs><rect width="400" height="290" fill="url(#ge)"/><circle cx="300" cy="95" r="62" fill="#fff6c8" opacity=".4"/><circle cx="300" cy="95" r="40" fill="#fff2a8"/><path d="M20 205 L95 120 L170 205Z" fill="#e9b24f"/><path d="M95 120 L170 205 L95 205Z" fill="#c78a2c"/><path d="M110 212 L205 85 L300 212Z" fill="#f0bf5c"/><path d="M205 85 L300 212 L205 212Z" fill="#cf8f30"/><g stroke="#b9771f" stroke-width="1" opacity=".5" fill="none"><path d="M128 190 H283 M148 164 H262 M168 138 H243 M186 112 H224"/></g><path d="M270 212 L315 160 L360 212Z" fill="#e6a940"/><path d="M315 160 L360 212 L315 212Z" fill="#bf7f27"/><path d="M0 212 Q100 190 200 210 T400 204 L400 290 L0 290Z" fill="#f6d684"/><path d="M0 252 Q130 226 250 252 T400 242 L400 290 L0 290Z" fill="#eec062"/><g transform="translate(-34 0)"><path d="M360 218 Q352 172 366 130" stroke="#8a5a2b" stroke-width="7" fill="none" stroke-linecap="round"/><g fill="#2f9e44"><ellipse cx="350" cy="128" rx="28" ry="8" transform="rotate(-25 350 128)"/><ellipse cx="384" cy="126" rx="28" ry="8" transform="rotate(25 384 126)"/><ellipse cx="366" cy="116" rx="26" ry="8" transform="rotate(-80 366 116)"/><ellipse cx="368" cy="132" rx="26" ry="7" transform="rotate(70 368 132)"/></g></g><path d="M60 70 q8 -10 16 0 q8 -10 16 0" stroke="#7a4a1d" fill="none" stroke-width="2"/><text x="32" y="246" font-size="34">🐪</text><text x="150" y="276" font-size="22">🏺</text><text x="310" y="272" font-size="22">🌵</text></svg>`,
+v2:CENA_I+`<defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b4bb7"/><stop offset=".55" stop-color="#ff8fb1"/><stop offset="1" stop-color="#ffe2b8"/></linearGradient></defs><rect width="400" height="290" fill="url(#gp)"/><circle cx="95" cy="190" r="36" fill="#ffd9a0"/><g fill="#fff" opacity=".7"><ellipse cx="300" cy="70" rx="40" ry="11"/><ellipse cx="325" cy="60" rx="24" ry="10"/><ellipse cx="70" cy="95" rx="34" ry="9"/></g><text x="335" y="140" font-size="26">🎈</text><g><rect x="0" y="178" width="64" height="62" fill="#f5d6b3"/><path d="M-4 178 L10 156 H54 L68 178Z" fill="#5d6b8a"/><rect x="62" y="190" width="50" height="50" fill="#f2c1a0"/><path d="M58 190 L70 172 H104 L116 190Z" fill="#6d5d8a"/></g><g><rect x="290" y="184" width="56" height="56" fill="#f6dcc0"/><path d="M286 184 L298 164 H338 L350 184Z" fill="#5d6b8a"/><rect x="344" y="172" width="56" height="68" fill="#f2c9a8"/><path d="M340 172 L352 150 H392 L404 172Z" fill="#6d5d8a"/></g><g fill="#ffcf5a"><rect x="10" y="190" width="9" height="13"/><rect x="30" y="190" width="9" height="13"/><rect x="46" y="190" width="9" height="13"/><rect x="10" y="214" width="9" height="13"/><rect x="30" y="214" width="9" height="13"/><rect x="72" y="200" width="8" height="12"/><rect x="92" y="200" width="8" height="12"/><rect x="72" y="222" width="8" height="12"/><rect x="298" y="196" width="9" height="13"/><rect x="318" y="196" width="9" height="13"/><rect x="298" y="220" width="9" height="13"/><rect x="318" y="220" width="9" height="13"/><rect x="354" y="184" width="9" height="13"/><rect x="376" y="184" width="9" height="13"/><rect x="354" y="210" width="9" height="13"/><rect x="376" y="210" width="9" height="13"/></g><path d="M150 232 L176 152 L188 112 L194 60 L200 16 L206 60 L212 112 L224 152 L250 232 L234 232 Q200 168 166 232 Z" fill="#4a3a63"/><g fill="#4a3a63"><rect x="180" y="148" width="40" height="7"/><rect x="188" y="108" width="24" height="6"/><rect x="194" y="56" width="12" height="5"/></g><g stroke="#a893c9" stroke-width="1.2" fill="none"><path d="M180 152 L220 108 M220 152 L180 108 M190 112 L210 62 M210 112 L190 62 M168 195 L186 156 M232 195 L214 156"/></g><path d="M0 238 H400 V290 H0Z" fill="#8c7bb0"/><path d="M0 238 H400" stroke="#b9a8d8" stroke-width="3"/><g stroke="#a393c7" stroke-width="2"><path d="M0 262 H400"/></g><g><rect x="130" y="196" width="3" height="42" fill="#3a3050"/><circle cx="131.5" cy="194" r="6" fill="#ffe27a"/><rect x="268" y="196" width="3" height="42" fill="#3a3050"/><circle cx="269.5" cy="194" r="6" fill="#ffe27a"/></g><text x="34" y="275" font-size="24">🥐</text><text x="322" y="276" font-size="24">🌷</text></svg>`,
+v3:CENA_I+`<defs><linearGradient id="gj" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb0c8"/><stop offset="1" stop-color="#fff0f5"/></linearGradient><linearGradient id="gjf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6f86d6"/><stop offset="1" stop-color="#3f4fa8"/></linearGradient></defs><rect width="400" height="290" fill="url(#gj)"/><circle cx="318" cy="62" r="30" fill="#e63946"/><g fill="#fff" opacity=".85"><ellipse cx="80" cy="60" rx="36" ry="10"/><ellipse cx="250" cy="48" rx="30" ry="9"/></g><path d="M30 218 L170 76 L310 218Z" fill="url(#gjf)"/><path d="M132 112 L170 76 L208 112 L192 106 L178 122 L164 106 L148 120Z" fill="#fff"/><path d="M0 215 Q100 190 200 214 T400 205 L400 290 L0 290Z" fill="#9fdc86"/><path d="M0 250 Q130 228 260 250 T400 242 L400 290 L0 290Z" fill="#7fcf6a"/><g transform="translate(-16 0)"><rect x="300" y="132" width="11" height="90" fill="#d62828"/><rect x="352" y="132" width="11" height="90" fill="#d62828"/><path d="M288 130 Q331 142 376 130 L382 117 Q331 131 282 117Z" fill="#d62828"/><rect x="304" y="148" width="54" height="7" fill="#d62828"/></g><path d="M52 222 Q40 175 62 138" stroke="#6b4226" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M58 170 Q82 150 96 132" stroke="#6b4226" stroke-width="6" fill="none" stroke-linecap="round"/><g><circle cx="60" cy="118" r="26" fill="#ffb3cf"/><circle cx="34" cy="132" r="20" fill="#ff8fb8"/><circle cx="86" cy="128" r="22" fill="#ffd0e0"/><circle cx="62" cy="96" r="18" fill="#ff9fc3"/><circle cx="100" cy="112" r="14" fill="#ffb3cf"/><circle cx="20" cy="110" r="13" fill="#ffd0e0"/></g><g fill="#ffb3cf"><ellipse cx="130" cy="170" rx="4" ry="2.5" transform="rotate(30 130 170)"/><ellipse cx="150" cy="205" rx="4" ry="2.5"/><ellipse cx="110" cy="235" rx="4" ry="2.5" transform="rotate(-30 110 235)"/><ellipse cx="200" cy="250" rx="4" ry="2.5"/><ellipse cx="260" cy="240" rx="4" ry="2.5" transform="rotate(40 260 240)"/><ellipse cx="90" cy="268" rx="4" ry="2.5"/></g><text x="32" y="280" font-size="22">🌸</text><text x="205" y="270" font-size="22">🏮</text><text x="258" y="196" font-size="24">⛩️</text></svg>`,
+v4:CENA_I+`<defs><linearGradient id="gn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f80ed"/><stop offset="1" stop-color="#bfe8ff"/></linearGradient><linearGradient id="gnw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a8fe0"/><stop offset="1" stop-color="#1b5fb0"/></linearGradient><pattern id="wn" width="10" height="12" patternUnits="userSpaceOnUse"><rect width="10" height="12" fill="#34456a"/><rect x="2" y="3" width="5" height="6" fill="#ffd166"/></pattern></defs><rect width="400" height="290" fill="url(#gn)"/><circle cx="60" cy="50" r="22" fill="#fff6b0"/><g fill="#fff" opacity=".85"><ellipse cx="240" cy="50" rx="34" ry="10"/><ellipse cx="262" cy="42" rx="20" ry="9"/></g><g fill="#6679a0"><rect x="20" y="140" width="50" height="82"/><rect x="215" y="128" width="46" height="94"/><rect x="290" y="150" width="30" height="72"/></g><g fill="url(#wn)"><rect x="40" y="158" width="46" height="64"/><rect x="95" y="128" width="42" height="94"/><rect x="146" y="112" width="42" height="110"/><rect x="153" y="92" width="28" height="20"/><rect x="160" y="74" width="14" height="18"/><rect x="190" y="146" width="36" height="76"/><rect x="236" y="138" width="44" height="84"/></g><path d="M167 74 V38" stroke="#34456a" stroke-width="3"/><path d="M0 222 H400 V248 H0Z" fill="url(#gnw)"/><g stroke="#fff" opacity=".6" stroke-width="2" fill="none"><path d="M10 232 q10 -5 20 0 t20 0 M120 238 q10 -5 20 0 t20 0 M220 230 q10 -5 20 0 t20 0"/></g><g transform="translate(-34 0)"><ellipse cx="350" cy="222" rx="48" ry="9" fill="#7aa86a"/><rect x="330" y="184" width="40" height="38" fill="#b9a58c"/><path d="M338 184 L346 128 L356 128 L364 184Z" fill="#5fbfa7"/><circle cx="351" cy="120" r="9" fill="#5fbfa7"/><path d="M343 114 L338 104 M347 111 L346 100 M351 110 L351 99 M355 111 L357 100 M359 114 L365 104" stroke="#5fbfa7" stroke-width="2.5" stroke-linecap="round"/><path d="M356 132 L372 92" stroke="#5fbfa7" stroke-width="6" stroke-linecap="round"/><circle cx="373" cy="85" r="7" fill="#ffcc00"/><circle cx="373" cy="85" r="12" fill="#ffe066" opacity=".5"/></g><rect x="0" y="248" width="400" height="42" fill="#5a6578"/><path d="M0 270 H400" stroke="#ffd93b" stroke-width="3" stroke-dasharray="18 14"/><text x="30" y="272" font-size="26">🚕</text><text x="312" y="276" font-size="22">🌭</text></svg>`,
+v5:CENA_I+`<defs><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6f61"/><stop offset=".5" stop-color="#ffb072"/><stop offset="1" stop-color="#ffe29a"/></linearGradient><linearGradient id="gsg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0b04a"/><stop offset="1" stop-color="#b88a2c"/></linearGradient></defs><rect width="400" height="290" fill="url(#gs)"/><circle cx="210" cy="170" r="76" fill="#fff0a8" opacity=".45"/><circle cx="210" cy="170" r="50" fill="#ffd15c"/><path d="M0 200 Q90 175 180 198 T400 192 L400 290 L0 290Z" fill="#c9762b"/><path d="M0 218 Q110 200 230 216 T400 210 L400 290 L0 290Z" fill="url(#gsg)"/><path d="M0 256 Q130 238 260 256 T400 250 L400 290 L0 290Z" fill="#8f6a1f"/><path d="M80 218 Q86 172 70 142 M84 176 Q104 152 124 138" stroke="#3b2a14" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="136" rx="58" ry="14" fill="#2f3e1c"/><ellipse cx="124" cy="130" rx="38" ry="11" fill="#3c4f24"/><g fill="#f2b84b"><ellipse cx="300" cy="196" rx="28" ry="15"/><rect x="278" y="204" width="5" height="30"/><rect x="290" y="206" width="5" height="28"/><rect x="310" y="206" width="5" height="28"/><rect x="320" y="204" width="5" height="30"/><path d="M318 190 L330 124 L339 127 L329 194Z"/><ellipse cx="340" cy="121" rx="12" ry="6" transform="rotate(-20 340 121)"/></g><g fill="#a8641c"><circle cx="292" cy="192" r="4"/><circle cx="306" cy="198" r="4"/><circle cx="318" cy="192" r="3.5"/><circle cx="324" cy="160" r="3"/><circle cx="328" cy="140" r="2.5"/></g><path d="M336 114 L335 106 M343 115 L345 107" stroke="#a8641c" stroke-width="2.5" stroke-linecap="round"/><g stroke="#4a2f12" stroke-width="2" fill="none"><path d="M120 60 q6 -8 12 0 q6 -8 12 0"/><path d="M250 80 q5 -7 10 0 q5 -7 10 0"/><path d="M180 40 q5 -7 10 0 q5 -7 10 0"/></g><text x="32" y="280" font-size="30">🦁</text><text x="150" y="238" font-size="26">🐘</text><text x="325" y="278" font-size="26">🦓</text></svg>`,
+v6:CENA_I+`<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a5c36"/><stop offset=".6" stop-color="#3fb95f"/><stop offset="1" stop-color="#c8f7a1"/></linearGradient></defs><rect width="400" height="290" fill="url(#ga)"/><g fill="#fff" opacity=".13"><path d="M120 0 L170 0 L110 250 L40 250Z"/><path d="M230 0 L270 0 L260 250 L190 250Z"/><path d="M320 0 L350 0 L400 230 L330 230Z"/></g><rect x="22" y="40" width="26" height="220" fill="#6b4226"/><rect x="346" y="30" width="28" height="230" fill="#5d3a20"/><g fill="#0f7a3e"><circle cx="35" cy="50" r="52"/><circle cx="360" cy="40" r="55"/><circle cx="90" cy="30" r="40"/><circle cx="300" cy="22" r="42"/></g><g fill="#1b9a4e"><circle cx="20" cy="78" r="34"/><circle cx="380" cy="72" r="36"/></g><g stroke="#2d8a3e" stroke-width="3" fill="none"><path d="M120 0 Q110 50 126 90"/><path d="M250 0 Q262 60 244 100"/><path d="M200 0 Q190 40 200 70"/></g><g fill="#34c26a"><ellipse cx="70" cy="175" rx="44" ry="12" transform="rotate(-25 70 175)"/><ellipse cx="335" cy="170" rx="44" ry="12" transform="rotate(25 335 170)"/><ellipse cx="60" cy="215" rx="38" ry="11" transform="rotate(20 60 215)"/><ellipse cx="345" cy="212" rx="38" ry="11" transform="rotate(-20 345 212)"/></g><path d="M0 240 Q100 228 200 240 T400 238 V290 H0Z" fill="#2aa4c4"/><path d="M0 262 Q100 252 200 262 T400 260 V290 H0Z" fill="#1c86a8"/><g fill="#3fae49"><ellipse cx="80" cy="255" rx="16" ry="5"/><ellipse cx="300" cy="270" rx="18" ry="5"/><ellipse cx="210" cy="280" rx="14" ry="4"/></g><g fill="#ff7eb6"><circle cx="82" cy="251" r="5"/><circle cx="300" cy="266" r="5"/></g><text x="290" y="130" font-size="30">🦜</text><text x="110" y="150" font-size="24">🦋</text><text x="170" y="222" font-size="26">🌺</text><text x="32" y="285" font-size="22">🐸</text></svg>`
+};
+const ACS_EMOJIS=['🎩','👑','🧢','🎓','👒','🪖','🎀','🎅','🕶️','👓','🎭','👔','🧣','🎧','🏅','👕','🧥','🦸','🦺','🥋','👙','🩱','👗','🩳','🩲','👖','🧦','👟','🥾','🩴','🛼','👞','🥿','⚽','🏀','🧸','🪁','🎸','🛹','🎈','🎾','🏐','🎮','🥁','🎺','🏆','🌟'];
+let escBicho='gato',nomeBicho='',animAte=0,reacaoAte=0,ultReacao=-1;
+const cfgBicho=()=>{const c=Object.assign({preco:50,comida:2,exerc:1,limite:3},(S&&S.cfgBicho)||{});['preco','comida','exerc','limite'].forEach(k=>{c[k]=Math.max(0,+c[k]||0)});return c};
+const baseBicho=()=>{const r=S&&S.resgates;const b=(r&&typeof r==='object'&&!Array.isArray(r))?r.bicho:null;return(b&&typeof b==='object')?b:{}};
+const bicho=()=>{const b=baseBicho();return b.tipo?b:null};
+const catalogo=()=>{const sv=(S&&Array.isArray(S.acessorios))?S.acessorios:null;if(!sv)return ACS_PADRAO;const ap=Array.isArray(S.acsApagados)?S.acsApagados:[];return sv.concat(ACS_PADRAO.filter(d=>!sv.some(x=>x.id===d.id)&&!ap.includes(d.id)))};
+const acsPorId=id=>catalogo().find(a=>a.id===id)||null;
+const minhasAcs=()=>{const b=baseBicho();return Array.isArray(b.pos)?b.pos:[]};
+const tipoBicho=k=>TIPOS_BICHO.find(x=>x[0]===k)||TIPOS_BICHO[0];
+const cuidados=b=>(+b.comida||0)+(+b.exerc||0);
+function estagioDe(b){
+  const c=cuidados(b);let k=0;ESTAGIOS.forEach((e,i)=>{if(c>=e[0])k=i});
+  return {i:k,nome:ESTAGIOS[k][1],esc:ESTAGIOS[k][2],ini:ESTAGIOS[k][0],prox:ESTAGIOS[k+1]||null,c:c};
+}
+function contHoje(b){return b.dia===hoje()?{c:+b.dc||0,e:+b.de||0}:{c:0,e:0}}
+function garantirBicho(){
+  if(!S.resgates||typeof S.resgates!=='object'||Array.isArray(S.resgates))S.resgates={};
+  if(!S.resgates.bicho||typeof S.resgates.bicho!=='object')S.resgates.bicho={};
+  return S.resgates.bicho;
+}
+function podeGastar(custo){
+  const d=disponivel();
+  if(d<custo){alert('Você precisa de '+custo+' moedas, mas tem '+Math.max(0,d)+' disponíveis. Continue cumprindo as tarefas!');return false}
+  return true;
+}
+function gastoUpd(custo){
+  const ds=hoje(),b=garantirBicho(),u={};
+  if(custo>0){
+    S.moedas-=custo;b.gasto=b.gasto||{};b.gasto[ds]=(+b.gasto[ds]||0)+custo;
+    u.moedas=increment(-custo);u['resgates.bicho.gasto.'+ds]=increment(custo);
+  }
+  return u;
+}
+function flutuar(ems){
+  const p=document.getElementById('palco');if(!p)return;
+  (ems||[]).forEach((x,i)=>{
+    const e=document.createElement('div');e.className='flut';e.textContent=x;
+    e.style.left=(15+Math.random()*70)+'%';e.style.animationDelay=(i*0.15)+'s';
+    p.appendChild(e);setTimeout(()=>e.remove(),2400);
+  });
+}
+function animarBicho(cls,ems,fala){
+  animAte=Date.now()+1700;
+  setTimeout(()=>{if(aba==='bicho'&&!digitando())desenhar()},1750);
+  const el=document.getElementById('bicho');
+  if(el){el.className='bicho-w '+cls;setTimeout(()=>{const e=document.getElementById('bicho');if(e)e.className='bicho-w'},1600)}
+  flutuar(ems);
+  const f=document.getElementById('fala');if(f&&fala)f.textContent=fala;
+}
+function falaInicial(b){
+  const c=contHoje(b);
+  if(!c.c&&!c.e)return 'Oi! Que tal um lanchinho? 🍖';
+  if(!c.e)return 'Gostei da comida! Vamos brincar um pouco? ⚽';
+  if(!c.c)return 'Fiquei com fome depois de brincar! 🍖';
+  return 'Estou muito feliz! Obrigado por cuidar de mim 💛';
+}
+function tocarBicho(){
+  if(admin()||!bicho()||Date.now()<reacaoAte)return;
+  reacaoAte=Date.now()+1500;
+  let r;do{r=Math.floor(Math.random()*3)}while(r===ultReacao);ultReacao=r;
+  const b=bicho();
+  const R=[
+    ['riso',['😂','🤣','😆'],'Hahaha! Que cócegas! 😂','riso'],
+    ['danca',['🎵','🎶','✨','🎵'],'Olha a minha dancinha! 🕺','danca'],
+    ['joia',['👍','⭐','👍'],'Joia! Você é demais! 👍','joia']
+  ][r];
+  animarBicho('r-'+R[0],R[1],R[2]);
+  tocar(R[3]);
+}
+function escolherBicho(k){nomeBicho=valEd('bi_nome');if(TIPOS_BICHO.some(x=>x[0]===k))escBicho=k;desenhar()}
+function adotarBicho(){
+  if(admin())return;
+  const tp=tipoBicho(escBicho),cfg=cfgBicho(),atual=bicho();
+  const nome=limpar(valEd('bi_nome'),14)||tp[2];
+  if(atual&&!confirm('Trocar de bichinho custa '+cfg.preco+' moedas. '+atual.nome+' vai morar na fazendinha 🌳 e o novo começa bebê. Seus adereços ficam com você. Continuar?'))return;
+  if(!podeGastar(cfg.preco))return;
+  const ds=hoje(),b=garantirBicho();
+  Object.assign(b,{tipo:tp[0],nome:nome,comida:0,exerc:0,dia:ds,dc:0,de:0});
+  const u=gastoUpd(cfg.preco);
+  u['resgates.bicho.tipo']=tp[0];u['resgates.bicho.nome']=nome;u['resgates.bicho.comida']=0;u['resgates.bicho.exerc']=0;
+  u['resgates.bicho.dia']=ds;u['resgates.bicho.dc']=0;u['resgates.bicho.de']=0;
+  gravar(u);
+  logar('bichinho',(atual?'João trocou de bichinho: ':'João adotou o bichinho: ')+tp[2].toLowerCase()+' '+nome+' (-'+cfg.preco+' moedas)');
+  nomeBicho='';
+  desenhar();
+  try{confete();tocar('bem')}catch(e){}
+  aviso('Bem-vindo, '+nome+'! 🎉');
+}
+function cuidarBicho(k){
+  if(admin())return;const b=bicho();if(!b)return;
+  const cfg=cfgBicho(),ct=contHoje(b);
+  const custo=k==='c'?cfg.comida:cfg.exerc,feitos=k==='c'?ct.c:ct.e;
+  if(feitos>=cfg.limite)return alert(b.nome+' já '+(k==='c'?'comeu':'se exercitou')+' bastante hoje! Volte amanhã 😊');
+  if(!podeGastar(custo))return;
+  const ds=hoje(),antes=estagioDe(b).i;
+  if(b.dia!==ds){b.dia=ds;b.dc=0;b.de=0}
+  const cn=k==='c'?'dc':'de',ct2=k==='c'?'comida':'exerc';
+  b[cn]=(+b[cn]||0)+1;b[ct2]=(+b[ct2]||0)+1;
+  const u=gastoUpd(custo);
+  u['resgates.bicho.dia']=ds;u['resgates.bicho.dc']=+b.dc||0;u['resgates.bicho.de']=+b.de||0;u['resgates.bicho.'+ct2]=b[ct2];
+  gravar(u);
+  const e=estagioDe(b),cresceu=e.i>antes;
+  logar('bichinho','João '+(k==='c'?'alimentou':'fez exercício com')+' '+b.nome+' (-'+custo+' moedas)'+(cresceu?' · virou '+e.nome:''));
+  desenhar();
+  if(cresceu){
+    try{confete();efeitoBem();tocar('bem')}catch(x){}
+    aviso(b.nome+' cresceu! Agora é '+e.nome+' 🎉');
+    animarBicho('r-pula',['🌟','✨','🎉','🌟'],b.nome+' cresceu! Agora sou '+e.nome+'! 🎉');
+  }else{
+    tocar('comer');
+    animarBicho(k==='c'?'r-pula':'r-danca',k==='c'?['🍖','😋','💛']:['⚽','💪','✨'],k==='c'?'Hummm, que delícia! 😋':'Que divertido! Vamos de novo! 💪');
+  }
+}
+function comprarAcs(id){
+  if(admin())return;const a=acsPorId(id);if(!a)return;
+  if(!bicho())return alert('Adote um bichinho primeiro!');
+  if(minhasAcs().includes(id))return;
+  const custo=+a.custo||0;
+  if(!podeGastar(custo))return;
+  if(!confirm('Comprar '+a.nome+' por '+custo+' moedas?'))return;
+  const b=garantirBicho();
+  b.pos=(Array.isArray(b.pos)?b.pos:[]).concat([id]);b.vest=b.vest||{};b.vest[a.slot]=id;
+  const u=gastoUpd(custo);
+  u['resgates.bicho.pos']=arrayUnion(id);u['resgates.bicho.vest.'+a.slot]=id;
+  gravar(u);
+  logar('bichinho','João comprou '+(a.slot==='fundo'?'a viagem: ':a.slot==='cor'?'a cor: ':'')+a.nome+' para '+b.nome+' (-'+custo+' moedas)');
+  desenhar();tocar('joia');
+  if(a.slot==='fundo'){try{confete();tocar('bem')}catch(e){}animarBicho('r-danca',['✈️','🧳','🌍','✈️'],FALA_VIAGEM[a.id]||'Que lugar lindo! 🤩')}
+  else if(a.slot==='cor')animarBicho('r-danca',['🌈','✨','🎨'],'Olha a minha cor nova! 🌈');
+  else animarBicho('r-joia',['✨',a.ic,'✨'],'Uau! Adorei o meu '+a.nome.toLowerCase()+'! 😍');
+}
+function usarItem(id){if(minhasAcs().includes(id))vestirAcs(id);else comprarAcs(id)}
+function limparSlot(slot){
+  if(admin())return;const b=bicho();if(!b||!(b.vest||{})[slot])return;
+  delete b.vest[slot];gravar({['resgates.bicho.vest.'+slot]:deleteField()});
+  desenhar();animarBicho('r-pula',slot==='fundo'?['🏡']:['✨'],slot==='fundo'?'Em casa é bom demais! 🏡':'Voltei ao normal! 😄');
+}
+function vestirAcs(id){
+  if(admin())return;const a=acsPorId(id),b=bicho();if(!a||!b||!minhasAcs().includes(id))return;
+  b.vest=b.vest||{};
+  if(b.vest[a.slot]===id){delete b.vest[a.slot];gravar({['resgates.bicho.vest.'+a.slot]:deleteField()})}
+  else{b.vest[a.slot]=id;gravar({['resgates.bicho.vest.'+a.slot]:id})}
+  desenhar();
+  if(a.slot==='fundo'&&b.vest.fundo===id)animarBicho('r-danca',['✈️','🧳'],FALA_VIAGEM[id]||'Que lugar lindo! 🤩');
+  else animarBicho('r-pula',['✨'],'Que estilo! 😎');
+}
+function palcoBicho(b){
+  const tp=tipoBicho(b.tipo),e=estagioDe(b),v=b.vest||{};
+  const ic=sl=>{const a=acsPorId(v[sl]);return a?esc(a.ic):''};
+  const cena=CENAS[v.fundo&&acsPorId(v.fundo)?v.fundo:'casa']||CENAS.casa;
+  const cor=v.cor&&acsPorId(v.cor)?v.cor:'';
+  return '<div class="palco" id="palco"><div class="cena">'+cena+'</div><div class="esc" style="transform:scale('+e.esc+')"><div class="bicho-w" id="bicho" onclick="tocarBicho()"><div class="b-cab">'+ic('cabeca')+'</div><div class="b-corpo'+(cor==='c7'?' arco':'')+'"'+(cor&&COR_FILTRO[cor]?' style="filter:'+COR_FILTRO[cor]+';-webkit-filter:'+COR_FILTRO[cor]+'"':'')+'>'+tp[1]+'</div><div class="b-rosto">'+ic('rosto')+'</div><div class="b-roupa">'+ic('corpo')+'</div><div class="b-pernas">'+ic('pernas')+'</div><div class="b-pescoco">'+ic('pescoco')+'</div><div class="b-pes">'+ic('meias')+ic('pes')+'</div></div></div><div class="b-mao">'+ic('mao')+'</div></div>';
+}
+function cartaoAdotar(troca){
+  const cfg=cfgBicho(),d=disponivel();
+  return '<div class="card"><b>'+(troca?'Trocar de bichinho':'Adote um bichinho 🐾')+'</b><div style="font-size:13px;color:#555;margin-top:4px">'+(troca?'Trocar custa '+cfg.preco+' moedas e o novo começa bebê. Seus adereços ficam com você.':'Escolha um amigo para cuidar. Ele cresce quando você dá comida e faz exercício com ele.')+'</div><div class="tiles">'+TIPOS_BICHO.map(x=>'<button class="tile '+(escBicho===x[0]?'on':'')+'" onclick="escolherBicho(\''+x[0]+'\')">'+x[1]+'<small>'+x[2]+'</small></button>').join('')+'</div><label>Nome do bichinho</label><input id="bi_nome" maxlength="14" placeholder="Ex: '+(tipoBicho(escBicho)[2])+'" value="'+esc(nomeBicho)+'"><button class="verde" onclick="adotarBicho()">'+(troca?'Trocar':'Adotar')+' por '+cfg.preco+' moedas 🪙</button>'+(d<cfg.preco?'<div style="font-size:13px;color:#a05a00;margin-top:6px">Faltam '+(cfg.preco-Math.max(0,d))+' moedas. Continue cumprindo as tarefas!</div>':'')+'</div>';
+}
+function telaBicho(){
+  const b=bicho(),cfg=cfgBicho();
+  if(!b)return '<div class="card"><b>🐾 Meu bichinho</b><div style="font-size:13px;color:#555;margin-top:4px">Moedas disponíveis: '+disponivel()+'</div></div>'+cartaoAdotar(false);
+  const e=estagioDe(b),t=tipoBicho(b.tipo),ct=contHoje(b),d=disponivel();
+  const pct=e.prox?Math.min(100,Math.round((e.c-e.ini)/(e.prox[0]-e.ini)*100)):100;
+  let html='<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b style="font-size:18px">'+esc(b.nome)+'</b><span style="font-size:13px;color:#555">'+esc(t[2])+' · '+esc(e.nome)+'</span></div>';
+  html+='<div class="fala" id="fala">'+esc(falaInicial(b))+'</div>'+palcoBicho(b);
+  html+='<div style="font-size:12px;color:#777;text-align:center">Toque no '+esc(t[2].toLowerCase())+' para ver o que acontece 😄</div>';
+  html+='<div class="bar" style="margin-top:10px"><div style="width:'+pct+'%;background:#7e57c2"></div></div><div style="font-size:12px;color:#555;margin-top:3px">'+(e.prox?'Faltam '+(e.prox[0]-e.c)+' cuidados para virar '+esc(e.prox[1]):'Nível máximo! 🌟')+'</div>';
+  html+='<div class="cuidar"><button class="'+(ct.c>=cfg.limite?'cinza':'')+'" onclick="cuidarBicho(\'c\')">🍖 Alimentar<small>'+cfg.comida+' 🪙 · hoje '+ct.c+'/'+cfg.limite+'</small></button><button class="'+(ct.e>=cfg.limite?'cinza':'')+'" onclick="cuidarBicho(\'e\')">⚽ Exercício<small>'+cfg.exerc+' 🪙 · hoje '+ct.e+'/'+cfg.limite+'</small></button></div>';
+  html+='<div style="font-size:13px;color:#555;margin-top:8px">Moedas disponíveis: '+d+'</div></div>';
+  const meus=minhasAcs().map(acsPorId).filter(a=>a&&SLOTS_ROUPA.includes(a.slot));
+  const v=b.vest||{};
+  html+='<div class="card"><b>👕 Guarda-roupa</b>'+(meus.length?'<div style="font-size:13px;color:#555;margin-top:4px">Toque para vestir ou tirar.</div><div class="tiles">'+meus.map(a=>'<button class="tile '+(v[a.slot]===a.id?'on':'')+'" onclick="vestirAcs(\''+a.id+'\')">'+esc(a.ic)+'<small>'+esc(a.nome)+(v[a.slot]===a.id?' ✔':'')+'</small></button>').join('')+'</div>':'<div class="task">Você ainda não tem roupas. Dê uma olhada na loja!</div>')+'</div>';
+  const ord=(x,y)=>SLOTS_BICHO.findIndex(s=>s[0]===x.slot)-SLOTS_BICHO.findIndex(s=>s[0]===y.slot)||(+x.custo||0)-(+y.custo||0);
+  const loja=catalogo().filter(a=>SLOTS_ROUPA.includes(a.slot)&&!a.oculto&&!minhasAcs().includes(a.id)).sort(ord);
+  html+='<div class="card"><b>🛍️ Loja de roupas e adereços</b><div style="font-size:13px;color:#555;margin-top:4px">Tudo é seu para sempre, mesmo se você trocar de bichinho.</div>'+(loja.length?'<div class="tiles">'+loja.map(a=>{const c=+a.custo||0;return '<button class="tile '+(d>=c?'ok':'sem')+'" onclick="comprarAcs(\''+a.id+'\')">'+esc(a.ic)+'<small>'+esc(a.nome)+'</small><b>🪙 '+c+'</b></button>'}).join('')+'</div>':'<div class="task">Você já tem tudo da loja! 🎉</div>')+'</div>';
+  const grade=(slot,padrao)=>{
+    const l=catalogo().filter(a=>a.slot===slot&&(!a.oculto||minhasAcs().includes(a.id))).sort(ord);
+    return '<div class="tiles"><button class="tile '+(!v[slot]?'on':'')+'" onclick="limparSlot(\''+slot+'\')">'+padrao[0]+'<small>'+padrao[1]+(!v[slot]?' ✔':'')+'</small></button>'+l.map(a=>{
+      const tem=minhasAcs().includes(a.id),c=+a.custo||0,on=v[slot]===a.id;
+      const mini=slot==='fundo'&&CENAS[a.id]?'<div class="mini-cena">'+CENAS[a.id]+'</div>':'<span style="font-size:34px">'+esc(a.ic)+'</span>';
+      return '<button class="tile '+(on?'on':tem?'':(d>=c?'ok':'sem'))+'" onclick="usarItem(\''+a.id+'\')">'+mini+'<small>'+esc(a.nome)+(on?' ✔':'')+'</small>'+(tem?'':'<b>🪙 '+c+'</b>')+'</button>';
+    }).join('')+'</div>';
+  };
+  html+='<div class="card"><b>✈️ Viagens do bichinho</b><div style="font-size:13px;color:#555;margin-top:4px">Compre uma viagem e o fundo muda para o destino. Depois é só escolher onde ficar.</div>'+grade('fundo',['🏡','Casa'])+'</div>';
+  html+='<div class="card"><b>🎨 Cores do bichinho</b><div style="font-size:13px;color:#555;margin-top:4px">Compre uma cor e escolha quando quiser trocar.</div>'+grade('cor',['⚪','Original'])+'</div>';
+  html+=cartaoAdotar(true);
+  return html;
+}
+let acFiltro='cabeca';
+function setAcFiltro(v){if(SLOTS_BICHO.some(x=>x[0]===v))acFiltro=v;desenhar()}
+function cartaoBichoAdmin(){
+  const b=bicho();
+  if(!b)return '<div class="card"><b>🐾 Bichinho do João</b><div style="color:#777;margin-top:6px">Ainda não adotou um bichinho.</div></div>';
+  const e=estagioDe(b),t=tipoBicho(b.tipo),g=Object.values(b.gasto||{}).reduce((a,x)=>a+(+x||0),0);
+  return '<div class="card"><b>🐾 Bichinho do João</b><div style="margin-top:6px">'+t[1]+' <b>'+esc(b.nome)+'</b> · '+esc(t[2])+' · '+esc(e.nome)+'</div><div style="font-size:13px;color:#555;margin-top:4px">'+(+b.comida||0)+' refeições · '+(+b.exerc||0)+' exercícios · '+minhasAcs().length+' item(ns) comprado(s) · '+g+' moedas gastas no total</div>'+((b.vest&&b.vest.fundo&&acsPorId(b.vest.fundo))?'<div style="font-size:13px;color:#555;margin-top:2px">✈️ Passeando em: '+esc(acsPorId(b.vest.fundo).nome)+'</div>':'')+'</div>';
+}
+/* admin: configurar o bichinho */
+function mudarCfgBicho(c,v){
+  const lim={preco:[0,1000],comida:[0,100],exerc:[0,100],limite:[1,20]}[c];if(!lim)return;
+  const n=numOk(v,lim[0],lim[1]);
+  if(n===null){alert('Use um número de '+lim[0]+' a '+lim[1]);desenhar();return}
+  S.cfgBicho=Object.assign({},S.cfgBicho||{});S.cfgBicho[c]=n;
+  gravar({['cfgBicho.'+c]:n});
+  logar('config','Bichinho: '+({preco:'preço do bichinho',comida:'preço da comida',exerc:'preço do exercício',limite:'limite diário'})[c]+' = '+n);
+  desenhar();
+}
+function editarCatalogo(fn){
+  const l=catalogo().map(a=>Object.assign({},a));
+  fn(l);S.acessorios=l;gravar({acessorios:l});
+}
+function novoAcessorio(){
+  const nome=limpar(valEd('ac_nome'),30),custo=numOk(valEd('ac_custo'),0,1000);
+  const slot=valEd('ac_slot'),ic=valEd('ac_ic');
+  if(!nome)return alert('Digite o nome do adereço');
+  if(custo===null)return alert('Preço: use um número de 0 a 1000');
+  if(!SLOTS_ROUPA.includes(slot)||!ACS_EMOJIS.includes(ic))return alert('Escolha o tipo e o ícone');
+  editarCatalogo(l=>l.push({id:'a'+Date.now(),nome:nome,ic:ic,slot:slot,custo:custo}));
+  logar('config','Adereço adicionado: '+nome+' ('+custo+' moedas)');desenhar();
+}
+function ocultarAcessorio(id){
+  const a=acsPorId(id);if(!a)return;
+  editarCatalogo(l=>{const x=l.find(y=>y.id===id);if(x){if(x.oculto)delete x.oculto;else x.oculto=1}});
+  logar('config','Adereço '+(a.oculto?'voltou para a loja: ':'escondido da loja: ')+a.nome);desenhar();
+}
+function tirarAcessorio(id){
+  const a=acsPorId(id);if(!a||!confirm('Excluir o adereço "'+a.nome+'"? Se o João já comprou, ele deixa de aparecer para ele. Isso não pode ser desfeito.'))return;
+  editarCatalogo(l=>{const i=l.findIndex(y=>y.id===id);if(i>=0)l.splice(i,1)});
+  if(ACS_PADRAO.some(d=>d.id===id)){S.acsApagados=(S.acsApagados||[]).concat([id]);gravar({acsApagados:arrayUnion(id)})}
+  logar('config','Adereço excluído: '+a.nome);desenhar();
+}
+function cartaoConfigBicho(){
+  const cfg=cfgBicho();
+  let html='<div class="card"><b>🐾 Bichinho do João</b><div style="font-size:13px;color:#777;margin-top:4px">O João gasta as moedas na hora, sem precisar da sua aprovação.</div>'+
+  '<label>Preço do bichinho (moedas)</label><input type="number" value="'+cfg.preco+'" onchange="mudarCfgBicho(\'preco\',this.value)">'+
+  '<label>Preço de cada comida (moedas)</label><input type="number" value="'+cfg.comida+'" onchange="mudarCfgBicho(\'comida\',this.value)">'+
+  '<label>Preço de cada exercício (moedas)</label><input type="number" value="'+cfg.exerc+'" onchange="mudarCfgBicho(\'exerc\',this.value)">'+
+  '<label>Limite por dia (comidas e exercícios, cada um)</label><input type="number" value="'+cfg.limite+'" onchange="mudarCfgBicho(\'limite\',this.value)">'+
+  '<div style="margin-top:12px;font-weight:700">Loja do bichinho (roupas, viagens e cores)</div>';
+  html+='<label>Mostrar</label><select onchange="setAcFiltro(this.value)">'+SLOTS_BICHO.map(x=>'<option value="'+x[0]+'" '+(acFiltro===x[0]?'selected':'')+'>'+(x[0]==='fundo'?'Viagens':x[0]==='cor'?'Cores':x[1])+'</option>').join('')+'</select>';
+  catalogo().filter(a=>a.slot===acFiltro).forEach(a=>{
+    html+=editando==='ac'+a.id?formSimples('acs',a.id,a.nome,'Preço em moedas',a.custo):'<div class="task"><div class="mini-ico">'+esc(a.ic)+'</div><div class="info"'+(a.oculto?' style="opacity:.55"':'')+'>'+esc(a.nome)+' — '+(+a.custo||0)+' moedas<br><small>'+esc((SLOTS_BICHO.find(x=>x[0]===a.slot)||['',''])[1])+(a.oculto?' · escondido da loja':'')+'</small></div><div class="acoes-i"><button class="ib" title="Editar" aria-label="Editar" onclick="editar(\'ac'+a.id+'\')">✏️</button><button class="ib" title="'+(a.oculto?'Mostrar na loja':'Esconder da loja')+'" aria-label="'+(a.oculto?'Mostrar na loja':'Esconder da loja')+'" onclick="ocultarAcessorio(\''+a.id+'\')">'+(a.oculto?'🙈':'👁️')+'</button><button class="ib red" title="Excluir" aria-label="Excluir" onclick="tirarAcessorio(\''+a.id+'\')">🗑️</button></div></div>';
+  });
+  html+='<label>Novo adereço</label><input id="ac_nome" placeholder="Ex: Gorro de lã" maxlength="30"><label>Preço em moedas</label><input id="ac_custo" type="number" placeholder="Ex: 10"><label>Tipo</label><select id="ac_slot">'+SLOTS_BICHO.filter(x=>SLOTS_ROUPA.includes(x[0])).map(x=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('')+'</select><label>Ícone</label><select id="ac_ic">'+ACS_EMOJIS.map(x=>'<option value="'+x+'">'+x+'</option>').join('')+'</select><button onclick="novoAcessorio()">Adicionar adereço</button></div>';
+  return html;
+}
+
+/* ---------- log ---------- */
+const quando=t=>new Date(t).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const LOG_DIAS=30;
+const corteLog=()=>Date.now()-LOG_DIAS*864e5;
+async function carregarLog(){
+  logCarregando=true;desenhar();
+  const corte=corteLog(),agora=new Date();
+  const meses=[];
+  for(let d=new Date(corte);mesDe(d)<=mesDe(agora);d=new Date(d.getFullYear(),d.getMonth()+1,1))meses.push(mesDe(d));
+  let itens=[];
+  for(const m of meses){
+    try{const s=await getDoc(doc(db,'log',m));if(s.exists())itens=itens.concat(s.data().itens||[])}
+    catch(e){alert('Nao consegui ler o log: '+e.message)}
+  }
+  itens=itens.filter(x=>x&&x.t>=corte);
+  itens.sort((a,b)=>b.t-a.t);
+  logDados=itens.slice(0,400);logCarregando=false;desenhar();
+}
+async function limparLog(){
+  try{if(localStorage.getItem('logLimpo')===hoje())return}catch(e){}
+  const corte=corteLog();
+  try{
+    const sn=await getDocs(collection(db,'log'));
+    for(const dc of sn.docs){
+      const velhos=((dc.data()||{}).itens||[]).filter(x=>!(x&&x.t>=corte));
+      for(let i=0;i<velhos.length;i+=100)
+        await updateDoc(doc(db,'log',dc.id),{itens:arrayRemove(...velhos.slice(i,i+100))});
+    }
+    try{localStorage.setItem('logLimpo',hoje())}catch(e){}
+  }catch(e){console.log('limparLog',e.message)}
+}
+function setLogFiltro(v){logFiltro=v;desenhar()}
+function telaLog(){
+  const ICO={tarefa:'✅','aprovação':'👍','rejeição':'⛔',bem:'💛',penalidade:'📉','prêmio':'🎁',config:'⚙️',humor:'🙂',acesso:'🔑',semana:'🏆',bichinho:'🐾'};
+  let html='<div class="card"><b>Registro de atividades</b><div style="display:flex;gap:8px;align-items:center;margin-top:6px"><select onchange="setLogFiltro(this.value)">'+['todos','João','Edmar','Patricia'].map(x=>'<option value="'+x+'" '+(logFiltro===x?'selected':'')+'>'+(x==='todos'?'Todos':x)+'</option>').join('')+'</select><button onclick="carregarLog()">Atualizar</button></div>';
+  if(logCarregando)html+='<div class="task">Carregando...</div>';
+  else if(logDados===null)html+='<div class="task">Toque em Atualizar.</div>';
+  else{
+    const l=logDados.filter(x=>logFiltro==='todos'||x.q===logFiltro).slice(0,150);
+    html+=l.length?l.map(x=>'<div class="lg">'+(ICO[x.k]||'•')+' '+esc(x.x)+'<br><small>'+esc(x.q)+' · '+esc(quando(x.t))+'</small></div>').join(''):'<div class="task">Nada registrado ainda.</div>';
+  }
+  return html+'<small style="color:#777">Guarda os últimos 30 dias. O que for mais antigo é apagado sozinho.</small></div>';
+}
+
+/* ---------- tela, login, ligação com o Firebase ---------- */
+function ir(a){
+  aba=a;editando=null;
+  const festa=a==='trofeus'&&!admin()&&S&&temEspecial('iniciante')&&!vistoEsp();
+  if(festa)marcarVistoEsp();
+  if(a==='log')carregarLog();else desenhar();
+  if(festa)setTimeout(()=>{try{efeitoBem();tocar('bem');confete()}catch(e){}},350);
+}
+function desenhar(){
+  const t=document.getElementById('title'),c=document.getElementById('coins'),m=document.getElementById('main'),n=document.getElementById('nav');
+  if(!user||!S){
+    document.body.classList.remove('kid');
+    t.textContent='Rotina';c.textContent='';
+    m.innerHTML=!user?telaLogin():'<div class="card">'+esc(erro||'Carregando...')+'</div>';
+    n.innerHTML='';return;
+  }
+  document.body.classList.toggle('kid',!admin());
+  t.textContent=admin()?'Administrador':'🚀 Minha rotina';
+  c.textContent=(admin()?'':'🪙 ')+S.moedas+' moedas';
+  const telas={hoje:telaHoje,progresso:telaMetas,premios:telaPremios,resumo:telaResumo,acoes:telaAcoes,descontos:telaDescontos,trofeus:telaTrofeus,bem:telaBem,bicho:telaBicho,log:telaLog,admin:telaAdmin};
+  if(!telas[aba]||((aba==='resumo'||aba==='acoes'||aba==='log'||aba==='admin')&&!admin())||((aba==='bem'||aba==='descontos'||aba==='bicho')&&admin()))aba='hoje';
+  try{m.innerHTML=telas[aba]()}catch(e){m.innerHTML='<div class="card late">Erro na tela: '+esc(e.message)+'</div>'}
+  let abas;
+  if(admin()){
+    const pp=pedidosOrdenados().reduce((a,p)=>a+Object.values(p.itens||{}).filter(it=>it.s==='pedido'||it.s==='assumido').length,0);
+    const np=pendentesAprov().length+pendentesBem().length;
+    abas=[['hoje','Hoje'],['resumo','Resumo'],['progresso','Análise'],['trofeus','Troféus'],['premios','Prêmios'+(pp?' ('+pp+')':'')],['acoes','Ações'+(np?' ('+np+')':'')],['log','Log'],['admin','Config']];
+  }else{
+    abas=[['hoje','📝 Hoje'],['progresso','📊 Metas'],['trofeus','🏆 Troféus'+(temEspecial('iniciante')&&!vistoEsp()?' 🆕':'')],['premios','🎁 Prêmios'],['bem','💛 Do bem'],['bicho','🐾 Bichinho'],['descontos','📉 Descontos']];
+  }
+  n.innerHTML=abas.map(a=>'<button class="'+(aba===a[0]?'active':'')+'" onclick="ir(\''+a[0]+'\')">'+a[1]+'</button>').join('')+'<button onclick="sair()">Sair</button>';
+}
+
+onAuthStateChanged(auth,async u=>{
+  user=u;S=null;antes=null;antesP=null;antesB=null;logouAcesso=false;logDados=null;carrinho=[];
+  if(parar){parar();parar=null}
+  desenhar();
+  if(!u)return;
+  try{
+    const s=await getDoc(ref);
+    if(!s.exists()){
+      try{await setDoc(ref,padrao)}
+      catch(e){erro='Peça a um administrador para entrar primeiro.';await signOut(auth);return}
+    }
+    parar=onSnapshot(ref,sn=>{
+      if(!sn.exists())return;
+      S=sn.data();
+      S.historico=S.historico||{};S.premios=S.premios||[];S.tarefas=S.tarefas||[];S.moedas=+S.moedas||0;
+      let mig=false;
+      S.tarefas.forEach(t=>{if(!t.hora){t.hora=HORAPADRAO[t.id]||'08:00';mig=true}});
+      if(mig&&admin())salvar('tarefas');
+      checarAvisos(S);
+      if(!logouAcesso){logouAcesso=true;logar('acesso',quem()+' entrou no app')}
+      if(admin()&&!window.fechando){window.fechando=true;fecharSemanas().finally(()=>{window.fechando=false})}
+      if(admin()&&!window.limpandoLog){window.limpandoLog=true;limparLog().finally(()=>{window.limpandoLog=false})}
+      if(admin()&&!window.concedendo){window.concedendo=true;concederEspeciais().finally(()=>{window.concedendo=false})}
+      if(!digitando())desenhar();
+    },e=>{erro=e.message;desenhar()});
+  }catch(e){erro='Erro: '+e.message;desenhar()}
+});
+
+function digitando(){
+  const f=document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='SELECT');
+  return (aba==='admin'&&(editando!==null||f))||((aba==='bem'||aba==='premios'||aba==='acoes'||aba==='bicho')&&f)||(aba==='bicho'&&Date.now()<animAte);
+}
+let diaTela=hoje();
+function aoVoltar(){
+  if(!S||!user||document.hidden)return;
+  const novoDia=hoje()!==diaTela;diaTela=hoje();
+  if(!digitando())desenhar();
+  if(novoDia&&admin()&&!window.fechando){window.fechando=true;fecharSemanas().finally(()=>{window.fechando=false})}
+}
+document.addEventListener('visibilitychange',aoVoltar);
+window.addEventListener('pageshow',aoVoltar);
+window.addEventListener('focus',aoVoltar);
+setInterval(()=>{if(S&&aba==='hoje'){if(hoje()!==diaTela)aoVoltar();else desenhar()}},60000);
+Object.assign(window,{definirSonho,marcarFolga,tirarFolga,enviarDoacao,novaCausa,tirarCausa,editar,cancelarEd,salvarTarefa,salvarSimples,escolherHumor,mudarCfg,mudarImpCfg,mudarSom,marcar,aprovar,rejeitar,mudarAprovacao,marcarBem,registrarBem,aprovarBem,rejeitarBem,enviarBemLivre,toggleSim,limparSim,enviarPedido,assumir,recusar,entregarItem,aplicarPenalidade,novaPenalidade,tirarPenalidade,mudarNegativo,novaAtitude,tirarAtitude,adicionar,mudarImp,mudarDia,remover,novoPremio,tirarPremio,mudarModo,setPer,moverPer,carregarLog,setLogFiltro,ir,entrar,sair});
+</script>
+</body>
+</html>
